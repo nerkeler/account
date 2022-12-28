@@ -1,11 +1,14 @@
 import os
 import sqlite3
 
-
+path = "./sql"
+filename = "account.db"
 class Db:
+
     def __init__(self):
+        self.flag = False
         self.check()
-        self.connect = sqlite3.connect('account.db')
+        self.connect = sqlite3.connect(f"{path}/{filename}")
         self.cur = self.connect.cursor()
         self.init()
 
@@ -44,16 +47,19 @@ class Db:
         self.connect.commit()
 
     def query_last(self):
-        return self.cur.execute("SELECT id,web_name,account,password,note FROM account  ORDER BY id DESC limit 1", ).fetchone()
+        return self.cur.execute("SELECT id,web_name,account,password,url,note FROM account  ORDER BY id DESC limit 1", ).fetchone()
 
     def init(self):
-        if not os.path.exists("account.db"):
+        if self.flag:
             self.create_table()
             self.commit()
 
     def check(self):
-        if not os.path.exists("account.db"):
-            f = open("account.db", "w")
-            f.close()
+        if not os.path.exists(path):
+            os.mkdir(path)
+            if not os.path.exists(f"{path}/{filename}"):
+                f = open(f"{path}/{filename}", "w")
+                f.close()
+                self.flag = True
 
 

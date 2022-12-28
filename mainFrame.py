@@ -26,7 +26,7 @@ class Gui:
     def __init__(self):
         self.master = tk.Tk()
         self.master.title("账户密码管理器")
-        self.master.iconbitmap("account.ico")
+        self.master.iconbitmap("./image/account.ico")
         options, selected_option = drop_func()
         self.frame = tk.Frame(self.master)
         self.entry = Entry(self.frame, width=50)
@@ -61,8 +61,10 @@ class Gui:
         add_gui.tk_init()
         print("新增框已退出，开始查询插入的数据")
         data = db.query_last()
-        print(f"最后一条数据为： {data}")
-        self.insert(data[0], data[1:],'')
+        account = list(data)
+        account[3] = "************"
+        print(f"最后一条数据为： {account}")
+        self.insert(account[0], account[1:],'')
         # self.add_button.configure(state='normal')
 
     def pack(self):
