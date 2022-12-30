@@ -1,6 +1,8 @@
-from mainFrame import Gui
-from accountMapper import Db
 import tkConfig
+import tkinter
+from accountMapper import Db
+from login import LoginForm
+from mainFrame import Gui
 
 # 初始化数据库对象和GUI对象
 db = Db()

@@ -79,7 +79,7 @@ class Gui:
     def show(self):
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
-        w = 900
+        w = 820
         h = 548
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2

@@ -9,7 +9,7 @@ def query(db, gui):
         if row_count % 2 == 1:
             gui.insert(account[0], account[1:], '')
         else:
-            gui.insert(account[0], account[1:], ("evenColor"))
+            gui.insert(account[0], account[1:], "evenColor")
         row_count += 1
 
 
