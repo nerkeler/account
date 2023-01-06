@@ -34,6 +34,13 @@ class Db:
         print(f"插入一条数据：{data}")
         return row
 
+    def update(self, account):
+        row = self.cur.execute("UPDATE account set web_name=?,account=?,password=?,url=?,note=? where id=?",
+                                (account[1], account[2], account[3], account[4], account[5], account[0]))
+        self.commit()
+        return row
+
+
     def query_all(self):
         query_all = "SELECT id,web_name,account,password,url,note FROM account where state='1'"
         accounts = self.cur.execute(query_all).fetchall()
@@ -41,13 +48,15 @@ class Db:
         return accounts
 
     def query_one(self, number):
-        return self.cur.execute("SELECT id,web_name,account,password,url,note FROM account where state='1'AND id = ?", (number,))
+        return self.cur.execute("SELECT id,web_name,account,password,url,note FROM account where state='1'AND id = ?",
+                                (number,))
 
     def commit(self):
         self.connect.commit()
 
     def query_last(self):
-        return self.cur.execute("SELECT id,web_name,account,password,url,note FROM account  ORDER BY id DESC limit 1", ).fetchone()
+        return self.cur.execute("SELECT id,web_name,account,password,url,note FROM account  ORDER BY id DESC limit 1",
+                                ).fetchone()
 
     def init(self):
         if self.flag:

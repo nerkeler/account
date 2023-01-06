@@ -1,6 +1,6 @@
 from tkinter import *
 import tkinter as tk
-from tkinter import messagebox
+from message import saveSuccess
 from tkinter.ttk import *
 
 from accountMapper import Db
@@ -11,6 +11,8 @@ class AddGui:
     def __init__(self):
         self.master = Tk()
         self.master.title("新增账户")
+        self.master.iconbitmap("./image/account.ico")
+
 
         self.frame1 = tk.Frame(self.master)
         self.frame2 = tk.Frame(self.master)
@@ -70,7 +72,7 @@ class AddGui:
         print(f"row.rowcount: {row.rowcount}")
         if row.rowcount == 1:
             print("新增数据成功，正在退出新增框")
-            messagebox.showinfo(title="提示", message="保存成功！")
+            saveSuccess()
             self.exit()
 
     def exit(self):

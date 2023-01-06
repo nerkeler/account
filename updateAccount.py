@@ -1,6 +1,6 @@
 from tkinter import *
 import tkinter as tk
-from tkinter import messagebox
+from message import updateSuccess
 from tkinter.ttk import *
 
 from accountMapper import Db
@@ -12,6 +12,8 @@ class UpdateGui:
         self.btn1 =self.btn2= None
         self.master = Tk()
         self.master.title("账户操作")
+        self.master.iconbitmap("./image/account.ico")
+        self.account = None
 
         self.frame1 = tk.Frame(self.master)
         self.frame2 = tk.Frame(self.master)
@@ -34,6 +36,7 @@ class UpdateGui:
 
     def tk_init(self, account):
         print("开始创建账户布局")
+        self.account = account
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
         w = 269
@@ -61,7 +64,7 @@ class UpdateGui:
         self.frame5.pack()
         self.frame4.pack()
         self.frame6.pack()
-        self.btn1 = Button(self.frame6, text="更新账户", command=self.add_account)
+        self.btn1 = Button(self.frame6, text="更新账户", command=self.update_account)
         self.btn1.pack(side=LEFT, padx=8, pady=8)
         self.btn2 = Button(self.frame6, text="显示密码", command=self.show)
         self.btn2.pack(side=LEFT, padx=8, pady=8)
@@ -69,14 +72,14 @@ class UpdateGui:
         self.create(account)
         self.master.mainloop()
 
-    def add_account(self):
+    def update_account(self):
         driver = Db()
-        data = [self.entry1.get(), self.entry2.get(), self.entry3.get(),self.entry5.get(), self.entry4.get()]
-        row = driver.insert_account(data)
+        data = [self.account[0], self.entry1.get(), self.entry2.get(), self.entry3.get(),self.entry5.get(), self.entry4.get()]
+        row = driver.update(data)
         print(f"row.rowcount: {row.rowcount}")
         if row.rowcount == 1:
-            print("新增数据成功，正在退出新增框")
-            messagebox.showinfo(title="提示", message="保存成功！")
+            print("更新数据成功，正在退出查看框")
+            updateSuccess()
             self.exit()
 
     def show(self):

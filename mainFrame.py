@@ -4,6 +4,8 @@ from tkinter.ttk import *
 from newAccount import AddGui
 from accountMapper import Db
 from updateAccount import UpdateGui
+from framUtil import *
+from message import noAccount
 
 
 def drop_func():
@@ -13,15 +15,6 @@ def drop_func():
     return options, selected_option
 
 
-def doubleClick(event):
-    update = UpdateGui()
-    db = Db()
-    e = event.widget
-    iid = e.identify("item", event.x, event.y)
-    state = e.item(iid, "text")
-    item = db.query_one(state).fetchone()
-    update.tk_init(item)
-
 class Gui:
     def __init__(self):
         self.master = tk.Tk()
@@ -30,13 +23,14 @@ class Gui:
         options, selected_option = drop_func()
         self.frame = tk.Frame(self.master)
         self.entry = Entry(self.frame, width=50)
-        self.select_button = Button(self.frame, text="查询")
         self.add_button = Button(self.frame, text="新增", command=self.add_account)
         self.treeFrame = tk.Frame(self.master, bd=8)
         self.tree = Treeview(self.treeFrame, height=50, columns=("网站", "账号", "密码", "网址"))
-        self.tree.bind("<Double-1>", doubleClick)
+        self.db = Db()
+        self.tree.bind("<Double-1>", self.doubleClick)
         self.tree.tag_configure("evenColor", background="lightblue")
         self.dropDown = Combobox(self.frame, textvariable=selected_option, values=options, width=10, state="readonly")
+        self.select_button = Button(self.frame, text="查询", command=self.query)
         self.tk_init()
 
     def tk_init(self):
@@ -45,27 +39,49 @@ class Gui:
         self.head()  # 设置TreeView head
         self.column()  # 设置TreeView column
 
-    # 插入一行数据
-    def insert(self, text, values, tags):
-        if tags != '' and tags[0] == "evenColor":
-            self.tree.insert("", index=END, text=text, values=values, tags=tags)
-        else:
-            self.tree.insert("", index=END, text=text, values=values)
+    def showAll(self):
+        print("首页查询展示")
+        accounts = self.db.query_all()
+        insert_all(self.tree, accounts)
+
+    # 查询函数
+    def query(self):
+        print("query开始执行")
+        if self.dropDown.get() == "账户编号":
+            index = self.entry.get()
+            if index.isdigit():
+                account = self.db.query_one(index).fetchone()
+                if account is None:
+                    noAccount()
+                else:
+                    delete_all(self.tree)
+                    insert(self.tree, account)
+            else:
+                self.reload()
+
+    def doubleClick(self, event):
+        update = UpdateGui()
+        e = event.widget
+        iid = e.identify("item", event.x, event.y)
+        state = e.item(iid, "text")
+        item = self.db.query_one(state).fetchone()
+        update.tk_init(item)
+        self.reload()
+
+    def rightButton(self, event):
+        pass
+
+    def reload(self):
+        delete_all(self.tree)
+        self.showAll()
 
     # 添加按钮功能函数
     def add_account(self):
-        # self.add_button.configure(state='disabled')
         print("开始新增账号")
         add_gui = AddGui()
-        db = Db()
         add_gui.tk_init()
         print("新增框已退出，开始查询插入的数据")
-        data = db.query_last()
-        account = list(data)
-        account[3] = "************"
-        print(f"最后一条数据为： {account}")
-        self.insert(account[0], account[1:],'')
-        # self.add_button.configure(state='normal')
+        self.reload()
 
     def pack(self):
         self.frame.pack()
@@ -86,7 +102,7 @@ class Gui:
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))
 
     def column(self):
-        self.tree.column("#0", width=50)
+        self.tree.column("#0", width=50, anchor=CENTER)
         self.tree.column("#1", anchor=CENTER)
         self.tree.column("#2", anchor=CENTER)
         self.tree.column("#3", anchor=CENTER)
@@ -98,6 +114,3 @@ class Gui:
         self.tree.heading("#2", text="账号")
         self.tree.heading("#3", text="密码")
         self.tree.heading("#4", text="网址")
-
-
-
