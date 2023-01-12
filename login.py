@@ -1,27 +1,37 @@
 import tkinter as tk
+from tkinter.ttk import *
+from message import loginError, loginSuccess
 
-
-class LoginForm(tk.Frame):
-    def __init__(self, master=None):
-        super().__init__(master)
-        self.pack()
-
+class LoginForm:
+    def __init__(self, ):
+        self.master = tk.Tk()
+        self.master.title("登录")
+        self.master.resizable(False, False)
+        self.master.iconbitmap("./image/account.ico")
+        screen_width = self.master.winfo_screenwidth()
+        screen_height = self.master.winfo_screenheight()
+        w = 300
+        h = 180
+        x = (screen_width - w) / 2
+        y = (screen_height - h) / 2
+        self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))
         self.create_widgets()
 
     def create_widgets(self):
-        self.username_label = tk.Label(self, text="Username:")
+        self.username_label = Label(self.master, text="用户名:")
         self.username_label.pack()
 
-        self.username_entry = tk.Entry(self)
+        self.username_entry = Entry(self.master, )
+        self.username_entry.setvar("admin")
         self.username_entry.pack()
 
-        self.password_label = tk.Label(self, text="Password:")
+        self.password_label = Label(self.master, text="密码:")
         self.password_label.pack()
 
-        self.password_entry = tk.Entry(self, show="*")
+        self.password_entry = Entry(self.master, show="*")
         self.password_entry.pack()
 
-        self.login_button = tk.Button(self, text="Login", command=self.login)
+        self.login_button = Button(self.master, text="登录", command=self.login)
         self.login_button.pack()
 
     def login(self):
@@ -30,7 +40,12 @@ class LoginForm(tk.Frame):
 
         # Validate the login here
         if username == "admin" and password == "password":
-            print("Logged in successfully!")
+            loginSuccess()
+            self.master.destroy()
+            self.master.quit()
         else:
-            print("Invalid username or password.")
+            loginError()
+            self.password_entry.setvar("")
+
+
 

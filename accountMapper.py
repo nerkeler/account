@@ -40,6 +40,8 @@ class Db:
         self.commit()
         return row
 
+    def query_url(self, url):
+        return self.cur.execute("SELECT id,web_name,account,password,url,note FROM account where state='1'  AND url like'%"+url+"%'")
 
     def query_all(self):
         query_all = "SELECT id,web_name,account,password,url,note FROM account where state='1'"
@@ -50,6 +52,9 @@ class Db:
     def query_one(self, number):
         return self.cur.execute("SELECT id,web_name,account,password,url,note FROM account where state='1'AND id = ?",
                                 (number,))
+
+    def query_text(self, text):
+        return self.cur.execute("SELECT id,web_name,account,password,url,note FROM account where state='1'  AND web_name like'%"+text+"%'")
 
     def commit(self):
         self.connect.commit()
@@ -70,5 +75,12 @@ class Db:
                 f = open(f"{path}/{filename}", "w")
                 f.close()
                 self.flag = True
+
+    def delete_one(self, state):
+        row = self.cur.execute("UPDATE account set state = '0' where id=?", (state,))
+        self.commit()
+        return row
+
+
 
 

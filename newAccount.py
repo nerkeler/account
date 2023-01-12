@@ -2,13 +2,14 @@ from tkinter import *
 import tkinter as tk
 from message import saveSuccess
 from tkinter.ttk import *
-
+# from MyRSA import MyRSA
 from accountMapper import Db
 
 
 class AddGui:
 
     def __init__(self):
+        # self.rsa = None
         self.master = Tk()
         self.master.title("新增账户")
         self.master.iconbitmap("./image/account.ico")
@@ -55,6 +56,9 @@ class AddGui:
         self.entry4.pack(side=LEFT, padx=8, pady=8)
         self.entry5.pack(side=LEFT, padx=8, pady=8)
 
+        # self.rsa = MyRSA()
+        # self.rsa.save_rsa("rsa_pub.pem", "rsa_priv.pem", "./pem/")
+
         self.frame1.pack()
         self.frame2.pack()
         self.frame3.pack()
@@ -67,7 +71,9 @@ class AddGui:
     def add_account(self):
 
         driver = Db()
-        data = [self.entry1.get(), self.entry2.get(), self.entry3.get(),self.entry5.get(), self.entry4.get()]
+        password = self.entry3.get()
+        # result = self.rsa.encrypt(password)
+        data = [self.entry1.get(), self.entry2.get(), password, self.entry5.get(), self.entry4.get()]
         row = driver.insert_account(data)
         print(f"row.rowcount: {row.rowcount}")
         if row.rowcount == 1:
