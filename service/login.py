@@ -1,13 +1,13 @@
-import hashlib
+
 import tkinter as tk
 from tkinter import LEFT, RIGHT, END
 from tkinter.ttk import *
 
 from dao.baseMapper import BaseDb
-from utils.message import loginError, loginSuccess
+from utils.framUtil import encode_user
+from utils.message import loginError
 import sys
 
-from utils.myAES import encode_password
 
 
 class LoginForm:
@@ -64,9 +64,7 @@ class LoginForm:
         username = self.username_entry.get()
         password = self.password_entry.get()
         print(f"login_button 运行了username:{username}, password{password}")
-        password = encode_password(password)
-        password = hashlib.sha3_256(password.encode("utf-8")).hexdigest().__str__()
-        print(password)
+        password = encode_user(password)
 
         result = self.base.queryOne("1").fetchone()
 

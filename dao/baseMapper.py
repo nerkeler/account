@@ -47,9 +47,7 @@ class BaseDb:
             "SELECT id,username,password FROM user where id = ?",
             (num,))
 
-
     def check(self):
-        print("lalala")
 
         if not os.path.exists(path):
             os.mkdir(path)

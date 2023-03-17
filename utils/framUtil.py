@@ -26,6 +26,11 @@ def userInit():
     # 生成默认账号
     baseDb = BaseDb()
     default_password = "password"
-    password = encode_password(default_password)
-    password = hashlib.sha3_256(password.encode("utf-8")).hexdigest().__str__()
+    password = encode_user(default_password)
     baseDb.defaultUser(["admin", password])
+
+
+def encode_user(password):
+    password = hashlib.md5((password+"slot").encode("utf-8")).hexdigest().__str__()
+    password = hashlib.sha3_256(password.encode("utf-8")).hexdigest().__str__()
+    return password

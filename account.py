@@ -9,6 +9,8 @@ from utils.framUtil import userInit
 
 def check_aes():
     # 生成密钥
+    if not os.path.exists("resource"):
+        os.mkdir("resource")
     if not os.path.exists("resource/aesKey"):
         key = uuid.uuid4().__str__()
         with open('resource/aesKey', 'w', encoding='utf-8') as f:  # 使用with open()新建对象f
