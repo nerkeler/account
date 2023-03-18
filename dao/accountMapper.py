@@ -1,7 +1,8 @@
 import os
 import sqlite3
 
-path = "dao/sql"
+path1 = "dao"
+path2 = "sql"
 filename = "account.db"
 
 
@@ -10,7 +11,7 @@ class Db:
     def __init__(self):
         self.flag = False
         self.check()
-        self.connect = sqlite3.connect(f"{path}/{filename}")
+        self.connect = sqlite3.connect(f"{path1}/{path2}/{filename}")
         self.cur = self.connect.cursor()
         self.init()
 
@@ -75,9 +76,12 @@ class Db:
             self.commit()
 
     def check(self):
-
-        if not os.path.exists(f"{path}/{filename}"):
-            f = open(f"{path}/{filename}", "w")
+        if not os.path.exists(path1):
+            os.mkdir(path1)
+        if not os.path.exists(f'{path1}/{path2}'):
+            os.mkdir(f'{path1}/{path2}')
+        if not os.path.exists(f"{path1}/{path2}/{filename}"):
+            f = open(f"{path1}/{path2}/{filename}", "w")
             f.close()
             self.flag = True
 
