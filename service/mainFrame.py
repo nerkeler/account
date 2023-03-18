@@ -1,3 +1,4 @@
+import sys
 from tkinter import *
 import tkinter as tk
 from tkinter.ttk import *
@@ -5,7 +6,6 @@ from tkinter.ttk import *
 from dao.accountMapper import Db
 from service.newAccount import AddGui
 from service.updateAccount import UpdateGui
-
 
 from utils.framUtil import *
 from utils.message import noAccount, deleteSuccess
@@ -26,8 +26,8 @@ class Gui:
         self.master.resizable(False, False)
         self.master.iconbitmap("./image/account.ico")
         options, selected_option = drop_func()
-        self.frame = tk.Frame(self.master)
-        self.entry = Entry(self.frame, width=20)
+        self.frame = tk.Frame(self.master,)
+        self.entry = Entry(self.frame, width=20,)
         self.add_button = Button(self.frame, text="新增", command=self.add_account)
         self.treeFrame = tk.Frame(self.master, bd=8)
         self.tree = Treeview(self.treeFrame, height=50, columns=("网站", "账号", "密码", "网址"))
@@ -82,13 +82,15 @@ class Gui:
             insert_all(self.tree, accounts)
 
     def doubleClick(self, event):
-        update = UpdateGui()
-        e = event.widget
-        iid = e.identify("item", event.x, event.y)
-        state = e.item(iid, "text")
-        item = list(self.db.query_one(state).fetchone())
-        item[3] = decode_password(item[3])
-        update.tk_init(item)
+        if event is not None:
+            update = UpdateGui()
+            e = event.widget
+            iid = e.identify("item", event.x, event.y)
+            state = e.item(iid, "text")
+            if state is not None:
+                item = list(self.db.query_one(state).fetchone())
+                item[3] = decode_password(item[3])
+                update.tk_init(item)
         self.reload()
 
     def showId(self, event):
@@ -166,5 +168,7 @@ class Gui:
         self.tree.heading("#4", text="网址")
 
     def login_break(self):
+        print("手动关闭窗口了")
         self.master.destroy()
         self.master.quit()
+        sys.exit()

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import base64
 import hashlib
-import uuid
+
 
 from Crypto.Cipher import AES
 
@@ -56,7 +56,3 @@ def gen_key():
         key = f.read().strip()
         myKey = md5_mix(key)
     return myKey
-
-
-
-

@@ -30,8 +30,8 @@ class BaseDb:
         self.cur.execute(sql_text)
         self.connect.commit()
 
-    def update(self, password):
-        row = self.cur.execute("UPDATE user set password=? where id=1", (password))
+    def update(self, item):
+        row = self.cur.execute("UPDATE user set password=? where id=?", (item[0],item[1]))
         self.connect.commit()
         return row
 

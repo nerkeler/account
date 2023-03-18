@@ -25,3 +25,18 @@ def loginSuccess():
 def loginError():
     tkinter.messagebox.showinfo(title="提示", message="密码错误，请重试！ ")
 
+
+def pwdNotEqual():
+    tkinter.messagebox.showinfo(title="提示", message="两次密码输入不一致")
+
+
+def pwdError():
+    tkinter.messagebox.showinfo(title="提示", message="原始密码错误")
+
+
+def pwdTooShot():
+    tkinter.messagebox.showinfo(title="提示", message="密码长度小于8位，请重新输入")
+
+
+def pwdUpdate():
+    tkinter.messagebox.showinfo(title="提示", message="密码更新成功，请重新打开程序！")

@@ -4,6 +4,7 @@ from tkinter import LEFT, RIGHT, END
 from tkinter.ttk import *
 
 from dao.baseMapper import BaseDb
+from service.updatePassword import UpdatePwd
 from utils.framUtil import encode_user
 from utils.message import loginError
 import sys
@@ -59,6 +60,7 @@ class LoginForm:
         self.login_button.pack(side=RIGHT)
         self.password_entry.bind("<Return>", self.login)
         buttonLabel.pack(pady=5, padx=20)
+        self.password_entry.focus_set()
 
     def login(self, event):
         username = self.username_entry.get()
@@ -82,4 +84,8 @@ class LoginForm:
         sys.exit()
 
     def update_password(self):
-        pass
+        self.master.iconify()
+        updatePass = UpdatePwd()
+        updatePass.master.mainloop()
+        self.master.state("normal")
+        self.password_entry.focus_set()
