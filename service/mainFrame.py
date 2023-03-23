@@ -1,4 +1,5 @@
 import sys
+import uuid
 from tkinter import *
 import tkinter as tk
 from tkinter.ttk import *
@@ -13,7 +14,7 @@ from utils.myAES import decode_password
 
 
 def drop_func():
-    options = ["账户编号", "网站名称", "网站网址"]
+    options = ["网站名称", "账户编号", "网站网址"]
     selected_option = StringVar()
     selected_option.set(options[0])
     return options, selected_option
@@ -41,6 +42,7 @@ class Gui:
         self.select_button = Button(self.frame, text="查询", command=self.query)
         self.see_button = Button(self.frame, text="查看", command=lambda: self.doubleClick(self.event))
         self.delete_button = Button(self.frame, text="删除", command=self.delete_item)
+        self.generate_button = Button(self.frame, text="随机密码", command=self.generate_password)
         self.master.protocol("WM_DELETE_WINDOW", self.login_break)
         self.tk_init()
 
@@ -141,6 +143,7 @@ class Gui:
         self.see_button.pack(side=LEFT, padx=8, pady=8)
         self.add_button.pack(side=LEFT, padx=8, pady=8)
         self.delete_button.pack(side=LEFT, padx=8, pady=8)
+        self.generate_button.pack(side=LEFT, padx=8, pady=8)
         self.treeFrame.pack()
         self.tree.pack()
 
@@ -155,10 +158,10 @@ class Gui:
 
     def column(self):
         self.tree.column("#0", width=50, anchor=CENTER)
-        self.tree.column("#1", anchor=CENTER)
-        self.tree.column("#2", anchor=CENTER)
-        self.tree.column("#3", anchor=CENTER)
-        self.tree.column("#4", anchor=CENTER)
+        self.tree.column("#1", width=188, anchor=CENTER)
+        self.tree.column("#2", width=188, anchor=CENTER)
+        self.tree.column("#3", width=188, anchor=CENTER)
+        self.tree.column("#4", width=188, anchor=CENTER)
 
     def head(self):
         self.tree.heading("#0", text="序号")
@@ -172,3 +175,7 @@ class Gui:
         self.master.destroy()
         self.master.quit()
         sys.exit()
+
+    def generate_password(self):
+        keyFrame = KeyFrame()
+        print(uuid.uuid4())

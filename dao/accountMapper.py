@@ -40,7 +40,7 @@ class Db:
         return row
 
     def update(self, account):
-        row = self.cur.execute("UPDATE account set web_name=?,account=?,password=?,url=?,note=? where id=?",
+        row = self.cur.execute("UPDATE account set web_name=?,account=?, password=?,url=?,note=? where id=?",
                                (account[1], account[2], account[3], account[4], account[5], account[0]))
         self.commit()
         return row

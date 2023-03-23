@@ -32,6 +32,7 @@ class AddGui:
         self.entry3 = Entry(self.frame3, textvariable=v3)
         self.entry4 = Entry(self.frame4, textvariable=v4)
         self.entry5 = Entry(self.frame5, textvariable=v5)
+        self.entry5.bind("<Return>", self.add_account)
 
     def tk_init(self):
         print("开始创建新增账户布局")
@@ -47,8 +48,8 @@ class AddGui:
         Label(self.frame1, text="网站: ").pack(side=LEFT, padx=8, pady=8)
         Label(self.frame2, text="账号: ").pack(side=LEFT, padx=8, pady=8)
         Label(self.frame3, text="密码: ").pack(side=LEFT, padx=8, pady=8)
-        Label(self.frame5, text="网址: ").pack(side=LEFT, padx=8, pady=8)
-        Label(self.frame4, text="备注: ").pack(side=LEFT, padx=8, pady=8)
+        Label(self.frame4, text="网址: ").pack(side=LEFT, padx=8, pady=8)
+        Label(self.frame5, text="备注: ").pack(side=LEFT, padx=8, pady=8)
 
         self.entry1.pack(side=LEFT, padx=8, pady=8)
         self.entry2.pack(side=LEFT, padx=8, pady=8)
@@ -59,17 +60,17 @@ class AddGui:
         self.frame1.pack()
         self.frame2.pack()
         self.frame3.pack()
-        self.frame5.pack()
         self.frame4.pack()
+        self.frame5.pack()
 
-        Button(self.master, text="确定", command=self.add_account).pack()
+        Button(self.master, text="确定", command=lambda: self.add_account(event="")).pack()
         self.master.mainloop()
 
-    def add_account(self):
+    def add_account(self, event):
         driver = Db()
         password = self.entry3.get()
         result = encode_password(password)
-        data = [self.entry1.get(), self.entry2.get(), result, self.entry5.get(), self.entry4.get()]
+        data = [self.entry1.get(), self.entry2.get(), result, self.entry4.get(), self.entry5.get()]
         row = driver.insert_account(data)
         print(f"row.rowcount: {row.rowcount}")
         if row.rowcount == 1:

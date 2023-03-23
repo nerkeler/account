@@ -51,8 +51,8 @@ class UpdateGui:
         Label(self.frame1, text="网站: ").pack(side=LEFT, padx=8, pady=8)
         Label(self.frame2, text="账号: ").pack(side=LEFT, padx=8, pady=8)
         Label(self.frame3, text="密码: ").pack(side=LEFT, padx=8, pady=8)
-        Label(self.frame5, text="网址: ").pack(side=LEFT, padx=8, pady=8)
-        Label(self.frame4, text="备注: ").pack(side=LEFT, padx=8, pady=8)
+        Label(self.frame4, text="网址: ").pack(side=LEFT, padx=8, pady=8)
+        Label(self.frame5, text="备注: ").pack(side=LEFT, padx=8, pady=8)
 
         self.entry1.pack(side=LEFT, padx=8, pady=8)
         self.entry2.pack(side=LEFT, padx=8, pady=8)
@@ -63,8 +63,8 @@ class UpdateGui:
         self.frame1.pack()
         self.frame2.pack()
         self.frame3.pack()
-        self.frame5.pack()
         self.frame4.pack()
+        self.frame5.pack()
         self.frame6.pack()
         self.btn1 = Button(self.frame6, text="更新账户", command=self.update_account, state=tk.DISABLED)
         self.btn1.pack(side=LEFT, padx=8, pady=8)
@@ -76,9 +76,15 @@ class UpdateGui:
 
     def update_account(self):
         driver = Db()
-        password = self.entry2.get()
+        password = self.entry3.get()
         result = encode_password(password)
-        data = [self.account[0], self.entry1.get(), result, self.entry3.get(), self.entry5.get(), self.entry4.get()]
+        print(f"[{self.account[0]},"
+              f" {self.entry1.get()},"           
+              f"{self.entry2.get()}, "
+              f" {result}, "
+              f"{self.entry4.get()}, "
+              f"{self.entry5.get()}]")
+        data = [self.account[0], self.entry1.get(),self.entry2.get(), result,  self.entry4.get(), self.entry5.get()]
         row = driver.update(data)
         print(f"row.rowcount: {row.rowcount}")
         if row.rowcount == 1:
@@ -109,5 +115,5 @@ class UpdateGui:
         self.entry2.insert(0, str(item[2]))
         self.entry3.insert(0, str(item[3]))
         self.entry3.configure(state="readonly")
-        self.entry5.insert(0, str(item[4]))
-        self.entry4.insert(0, str(item[5]))
+        self.entry4.insert(0, str(item[4]))
+        self.entry5.insert(0, str(item[5]))
