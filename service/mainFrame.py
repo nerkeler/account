@@ -6,6 +6,7 @@ from tkinter.ttk import *
 
 from dao.accountMapper import Db
 from service.newAccount import AddGui
+from service.passwordFrame import PasswordFrame
 from service.updateAccount import UpdateGui
 
 from utils.framUtil import *
@@ -177,5 +178,5 @@ class Gui:
         sys.exit()
 
     def generate_password(self):
-        keyFrame = KeyFrame()
-        print(uuid.uuid4())
+        passwordFrame = PasswordFrame()
+        passwordFrame.master.mainloop()
