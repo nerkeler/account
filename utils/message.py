@@ -40,3 +40,7 @@ def pwdTooShot():
 
 def pwdUpdate():
     tkinter.messagebox.showinfo(title="提示", message="密码更新成功，请重新打开程序！")
+
+
+def copyPwd():
+    tkinter.messagebox.showinfo(title="提示", message="复制成功")

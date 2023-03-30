@@ -1,8 +1,15 @@
+import random
 import tkinter as tk
 from tkinter.ttk import *
 from tkinter import END
 
 choose = {0: "ABC", 1: "abc", 2: "123", 3: "#$&"}
+constant_all = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&!"
+constant_ABC = [chr(i) for i in range(65, 91)]
+constant_abc = [chr(i) for i in range(97, 123)]
+constant_123 = [chr(i) for i in range(48, 58)]
+constant_symbol = [chr(i) for i in range(35, 39)]
+constant_symbol.append("!")
 
 
 class PasswordFrame:
@@ -29,22 +36,23 @@ class PasswordFrame:
         self.generate_button.pack(side=tk.LEFT, padx=5)
         self.copy_button.pack(side=tk.LEFT, padx=5)
 
-        self.var_ABC = tk.IntVar()
-        self.var_abc = tk.IntVar()
-        self.var_123 = tk.IntVar()
-        self.var_symbol = tk.StringVar()
         self.choose_frame = Frame(self.master, width=400)
-        self.choose_label = Label(self.choose_frame, text="所用字符: ")
+        self.var_ABC = tk.StringVar(master=self.choose_frame, value="1")
+        self.var_abc = tk.StringVar(master=self.choose_frame, value="1")
+        self.var_123 = tk.StringVar(master=self.choose_frame, value="1")
+        self.var_symbol = tk.StringVar(master=self.choose_frame, value="1")
+        self.choose_label = Label(self.choose_frame, text="密码字符类型选择: ")
         self.check_button_ABC = Checkbutton(self.choose_frame, text="ABC", compound=tk.RIGHT, variable=self.var_ABC)
         self.check_button_abc = Checkbutton(self.choose_frame, text="abc", compound=tk.RIGHT, variable=self.var_abc)
         self.check_button_123 = Checkbutton(self.choose_frame, text="123", compound=tk.RIGHT, variable=self.var_123)
-        self.check_button_symbol = Checkbutton(self.choose_frame, text="#$&", compound=tk.RIGHT, variable=self.var_symbol)
+        self.check_button_symbol = Checkbutton(self.choose_frame, text="#$&", compound=tk.RIGHT,
+                                               variable=self.var_symbol)
         self.choose_frame.pack()
         self.choose_label.pack(side=tk.LEFT, padx=22, pady=5)
-        self.check_button_ABC.pack(side=tk.LEFT, padx=15, pady=5)
-        self.check_button_abc.pack(side=tk.LEFT, padx=15, pady=5)
-        self.check_button_123.pack(side=tk.LEFT, padx=15, pady=5)
-        self.check_button_symbol.pack(side=tk.LEFT, padx=15, pady=5)
+        self.check_button_ABC.pack(side=tk.LEFT, padx=10, pady=5)
+        self.check_button_abc.pack(side=tk.LEFT, padx=10, pady=5)
+        self.check_button_123.pack(side=tk.LEFT, padx=10, pady=5)
+        self.check_button_symbol.pack(side=tk.LEFT, padx=10, pady=5)
 
         intVar = tk.IntVar()
         self.scale_frame = Frame(self.master, width=400)
@@ -66,12 +74,31 @@ class PasswordFrame:
         self.master.quit()
 
     def generate(self):
-        print(self.var_ABC.get())
-        print("genearte  running")
+
+        length = int(self.scale.get())
+        gen_pass = ''
+        if self.var_123.get() == "1":
+            gen_pass = gen_pass + ''.join(constant_123)
+        if self.var_abc.get() == "1":
+            gen_pass = gen_pass + "".join(constant_abc)
+        if self.var_ABC.get() == "1":
+            gen_pass = gen_pass + ''.join(constant_ABC)
+        if self.var_symbol.get() == "1":
+            gen_pass = gen_pass + ''.join(constant_symbol)
+        if gen_pass == '':
+            gen_pass = constant_all
+        if length > len(gen_pass):
+            for i in range(length - (len(gen_pass)) + 2):
+                gen_pass += str(random.randint(0, 10))
+
+        password = ''.join(random.sample(gen_pass, length))
+        self.entry.delete(0, END)
+        self.entry.insert(0, password)
 
     def copy(self):
-        print("copy running")
+        self.master.clipboard_clear()
+        self.master.clipboard_append(self.entry.get())
 
     def printLn(self, event):
         self.scale_label2.config(text=int(self.scale.get()))
-
+        self.generate()
