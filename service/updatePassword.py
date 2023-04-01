@@ -1,8 +1,8 @@
 import sys
 import tkinter as tk
 import tkinter.messagebox
-from tkinter import *
-
+from tkinter.ttk import *
+from tkinter import LEFT, RIGHT, END
 from dao.baseMapper import BaseDb
 from utils.framUtil import encode_user
 from utils.message import updateSuccess, pwdNotEqual, pwdError, pwdTooShot, pwdUpdate
