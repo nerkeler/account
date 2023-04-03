@@ -48,3 +48,12 @@ def copyPwd():
 
 def makeSure():
     return tkinter.messagebox.askokcancel(title="删除账户", message="确定或取消")
+
+
+def haveKey():
+    tkinter.Tk().withdraw()
+    return tkinter.messagebox.askquestion(title="创建密钥", message="是否持有密钥用于更新程序？")
+
+
+def emptyKey():
+    tkinter.messagebox.showinfo(title="提示", message="密钥为空")

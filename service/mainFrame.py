@@ -1,3 +1,4 @@
+import csv
 import sys
 import uuid
 from tkinter import *
@@ -30,7 +31,13 @@ class Gui:
         self.master.resizable(False, False)
         self.master.iconbitmap("./image/account.ico")
         options, selected_option = drop_func()
-        self.frame = tk.Frame(self.master, )
+        self.menubar = Menu(self.master)
+        self.menubar.add_command(label="首页", command=self.reload)
+        self.menubar.add_command(label="导入",)
+        self.menubar.add_command(label="导出", command=self.export)
+        self.menubar.add_command(label="关于",)
+        self.master.config(menu=self.menubar)
+        self.frame = tk.Frame(self.master)
         self.entry = Entry(self.frame, width=20, )
         self.add_button = Button(self.frame, text="新增", command=self.add_account)
         self.treeFrame = tk.Frame(self.master, bd=8)
@@ -186,3 +193,12 @@ class Gui:
     def generate_password(self):
         passwordFrame = PasswordFrame(self.master)
         passwordFrame.master.mainloop()
+
+    def export(self):
+        accounts = self.db.query_all()
+        with open("account.csv", "w", newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(["id", "web_name", "account", "password", "url", "note", "create_time", "update_time", "state"])
+            writer.writerows(accounts)
+
+
