@@ -11,6 +11,8 @@ from utils.message import updateSuccess, pwdNotEqual, pwdError, pwdTooShot, pwdU
 class UpdatePwd:
     def __init__(self, ):
         self.master = tk.Tk()
+        self.master.withdraw()  # 隐藏闪烁
+        self.master.update()
         self.master.title("修改密码")
         self.master.resizable(False, False)
         self.master.iconbitmap("./image/account.ico")
@@ -21,6 +23,7 @@ class UpdatePwd:
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))
+        self.master.deiconify()
         self.master.protocol("WM_DELETE_WINDOW", self.login_break)
         self.create_widgets()
 

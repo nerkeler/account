@@ -10,13 +10,18 @@ from utils.myAES import encode_password
 
 class UpdateGui:
 
-    def __init__(self):
+    def __init__(self, root):
         self.btn1 = self.btn2 = None
-        self.master = Tk()
+        self.master = Toplevel(master=root)
+        self.master.withdraw()  # 隐藏闪烁
+        self.master.update()
         self.master.title("账户操作")
         self.master.iconbitmap("./image/account.ico")
         self.account = None
-
+        # 使弹出窗口一直处于主窗口前面
+        self.master.transient(root)
+        # 将top1设置为模式对话框，top1不关闭无法操作主窗口
+        self.master.grab_set()
         self.frame1 = tk.Frame(self.master)
         self.frame2 = tk.Frame(self.master)
         self.frame3 = tk.Frame(self.master)
@@ -46,7 +51,7 @@ class UpdateGui:
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))
-
+        self.master.deiconify()
         Label(self.master, text="账户操作").pack(padx=8, pady=8)
         Label(self.frame1, text="网站: ").pack(side=LEFT, padx=8, pady=8)
         Label(self.frame2, text="账号: ").pack(side=LEFT, padx=8, pady=8)
@@ -79,12 +84,12 @@ class UpdateGui:
         password = self.entry3.get()
         result = encode_password(password)
         print(f"[{self.account[0]},"
-              f" {self.entry1.get()},"           
+              f" {self.entry1.get()},"
               f"{self.entry2.get()}, "
               f" {result}, "
               f"{self.entry4.get()}, "
               f"{self.entry5.get()}]")
-        data = [self.account[0], self.entry1.get(),self.entry2.get(), result,  self.entry4.get(), self.entry5.get()]
+        data = [self.account[0], self.entry1.get(), self.entry2.get(), result, self.entry4.get(), self.entry5.get()]
         row = driver.update(data)
         print(f"row.rowcount: {row.rowcount}")
         if row.rowcount == 1:
@@ -104,7 +109,6 @@ class UpdateGui:
             self.entry3.configure(state="readonly")
             self.btn2.config(text="显示密码")
             self.btn1.config(state=tk.DISABLED)
-
 
     def exit(self):
         self.master.destroy()

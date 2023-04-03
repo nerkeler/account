@@ -44,3 +44,7 @@ def pwdUpdate():
 
 def copyPwd():
     tkinter.messagebox.showinfo(title="提示", message="复制成功")
+
+
+def makeSure():
+    return tkinter.messagebox.askokcancel(title="删除账户", message="确定或取消")

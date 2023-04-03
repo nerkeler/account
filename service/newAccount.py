@@ -9,12 +9,17 @@ from utils.myAES import aes_encode, encode_password
 
 class AddGui:
 
-    def __init__(self):
+    def __init__(self, root):
         # self.rsa = None
-        self.master = Tk()
+        self.master = Toplevel(master=root)
+        self.master.withdraw()  # 隐藏闪烁
+        self.master.update()
         self.master.title("新增账户")
         self.master.iconbitmap("./image/account.ico")
-
+        # 使弹出窗口一直处于主窗口前面
+        self.master.transient(root)
+        # 将top1设置为模式对话框，top1不关闭无法操作主窗口
+        self.master.grab_set()
         self.frame1 = tk.Frame(self.master)
         self.frame2 = tk.Frame(self.master)
         self.frame3 = tk.Frame(self.master)
@@ -43,7 +48,7 @@ class AddGui:
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))
-
+        self.master.deiconify()
         Label(self.master, text="添加账号密码").pack(padx=8, pady=8)
         Label(self.frame1, text="网站: ").pack(side=LEFT, padx=8, pady=8)
         Label(self.frame2, text="账号: ").pack(side=LEFT, padx=8, pady=8)

@@ -10,7 +10,7 @@ from service.passwordFrame import PasswordFrame
 from service.updateAccount import UpdateGui
 
 from utils.framUtil import *
-from utils.message import noAccount, deleteSuccess
+from utils.message import noAccount, deleteSuccess, makeSure
 from utils.myAES import decode_password
 
 
@@ -24,12 +24,14 @@ def drop_func():
 class Gui:
     def __init__(self):
         self.master = tk.Tk()
+        self.master.withdraw()  # 隐藏闪烁
+        self.master.update()
         self.master.title("账户密码管理器")
         self.master.resizable(False, False)
         self.master.iconbitmap("./image/account.ico")
         options, selected_option = drop_func()
-        self.frame = tk.Frame(self.master,)
-        self.entry = Entry(self.frame, width=20,)
+        self.frame = tk.Frame(self.master, )
+        self.entry = Entry(self.frame, width=20, )
         self.add_button = Button(self.frame, text="新增", command=self.add_account)
         self.treeFrame = tk.Frame(self.master, bd=8)
         self.tree = Treeview(self.treeFrame, height=50, columns=("网站", "账号", "密码", "网址"))
@@ -86,11 +88,11 @@ class Gui:
 
     def doubleClick(self, event):
         if event is not None:
-            update = UpdateGui()
             e = event.widget
             iid = e.identify("item", event.x, event.y)
             state = e.item(iid, "text")
-            if state is not None:
+            if state is not None and state != '':
+                update = UpdateGui(self.master)
                 item = list(self.db.query_one(state).fetchone())
                 item[3] = decode_password(item[3])
                 update.tk_init(item)
@@ -100,17 +102,20 @@ class Gui:
         self.event = event
 
     def delete_item(self):
-        print(self.event)
-        if self.event is not None:
-            print("开始删除")
-            e = self.event.widget
-            iid = e.identify("item", self.event.x, self.event.y)
-            state = e.item(iid, "text")
-            print(state)
-            row = self.db.delete_one(state).rowcount
-            if row == 1:
-                deleteSuccess()
-                self.reload()
+
+        if makeSure():
+            if self.event is not None:
+                print("开始删除")
+                e = self.event.widget
+                iid = e.identify("item", self.event.x, self.event.y)
+                state = e.item(iid, "text")
+                print(state)
+                row = self.db.delete_one(state).rowcount
+                if row == 1:
+                    deleteSuccess()
+                    self.reload()
+        else:
+            pass
 
     def rightButton(self, event):
         menu = self.method_name()
@@ -131,7 +136,7 @@ class Gui:
     # 添加按钮功能函数
     def add_account(self):
         print("开始新增账号")
-        add_gui = AddGui()
+        add_gui = AddGui(self.master)
         add_gui.tk_init()
         print("新增框已退出，开始查询插入的数据")
         self.reload()
@@ -156,6 +161,7 @@ class Gui:
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))
+        self.master.deiconify()
 
     def column(self):
         self.tree.column("#0", width=50, anchor=CENTER)
@@ -178,5 +184,5 @@ class Gui:
         sys.exit()
 
     def generate_password(self):
-        passwordFrame = PasswordFrame()
+        passwordFrame = PasswordFrame(self.master)
         passwordFrame.master.mainloop()

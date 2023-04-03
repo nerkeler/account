@@ -1,4 +1,3 @@
-
 import tkinter as tk
 from tkinter import LEFT, RIGHT, END
 from tkinter.ttk import *
@@ -10,11 +9,12 @@ from utils.message import loginError
 import sys
 
 
-
 class LoginForm:
     def __init__(self, ):
 
         self.master = tk.Tk()
+        self.master.withdraw()  # 隐藏闪烁
+        self.master.update()
         self.master.title("登录")
         self.master.resizable(False, False)
         self.master.iconbitmap("./image/account.ico")
@@ -25,6 +25,7 @@ class LoginForm:
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))
+        self.master.deiconify()
         self.base = BaseDb()
         self.master.protocol("WM_DELETE_WINDOW", self.login_break)
         self.create_widgets()

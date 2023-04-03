@@ -14,11 +14,17 @@ constant_symbol.append("!")
 
 class PasswordFrame:
 
-    def __init__(self):
-        self.master = tk.Tk()
+    def __init__(self, root):
+        self.master = tk.Toplevel(master=root)
+        self.master.withdraw()  # 隐藏闪烁
+        self.master.update()
         self.master.title("随机密码生成")
         self.master.resizable(False, False)
         self.master.iconbitmap("./image/account.ico")
+        # 使弹出窗口一直处于主窗口前面
+        self.master.transient(root)
+        # 将top1设置为模式对话框，top1不关闭无法操作主窗口
+        self.master.grab_set()
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
         w = 560
@@ -26,7 +32,7 @@ class PasswordFrame:
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))
-
+        self.master.deiconify()
         self.generate_frame = Frame(self.master, width=400)
         self.entry = Entry(self.generate_frame, width=30)
         self.generate_button = Button(self.generate_frame, text="生成", command=self.generate)
