@@ -210,13 +210,14 @@ class Gui:
     def importFile(self):
         root = tk.Tk()
         root.withdraw()
-        self.master.iconbitmap("./image/account.ico")
-        Folderpath = filedialog.askopenfilename(initialdir="/", title="打开",
+        root.title("数据导入")
+        root.iconbitmap("./image/account.ico")
+        Folderpath = filedialog.askopenfilename(initialdir="/", title="数据导入",
                                                 filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
-
-        importFile = ImportFileFrame(Folderpath, self.master)
-        importFile.master.mainloop()
-        self.reload()
+        if Folderpath is not None and Folderpath != "":
+            importFile = ImportFileFrame(Folderpath, self.master)
+            importFile.master.mainloop()
+            self.reload()
 
     def bout(self):
         about = About(self.master)

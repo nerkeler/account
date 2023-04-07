@@ -27,7 +27,7 @@ class ImportFileFrame:
         self.path = filePath
         # 将top1设置为模式对话框，top1不关闭无法操作主窗口
         self.master.grab_set()
-        # self.master.protocol("WM_DELETE_WINDOW", self.login_break)
+        # self.master.protocol("WM_DELETE_WINDOW", self.login_break())
         self.create_widgets()
 
     def create_widgets(self):
@@ -48,5 +48,9 @@ class ImportFileFrame:
                 i[3] = encode_password(encode_key(key, i[3]))
                 db.insert_account(i[1:])
         importSuccess()
+        self.master.quit()
+        self.master.destroy()
+
+    def login_break(self):
         self.master.quit()
         self.master.destroy()
