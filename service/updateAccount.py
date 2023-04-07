@@ -83,12 +83,6 @@ class UpdateGui:
         driver = Db()
         password = self.entry3.get()
         result = encode_password(password)
-        print(f"[{self.account[0]},"
-              f" {self.entry1.get()},"
-              f"{self.entry2.get()}, "
-              f" {result}, "
-              f"{self.entry4.get()}, "
-              f"{self.entry5.get()}]")
         data = [self.account[0], self.entry1.get(), self.entry2.get(), result, self.entry4.get(), self.entry5.get()]
         row = driver.update(data)
         print(f"row.rowcount: {row.rowcount}")

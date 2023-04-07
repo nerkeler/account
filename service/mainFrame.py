@@ -1,11 +1,13 @@
 import csv
 import sys
-import uuid
 from tkinter import *
 import tkinter as tk
+from tkinter import filedialog
 from tkinter.ttk import *
 
 from dao.accountMapper import Db
+from service.about import About
+from service.importFileFrame import ImportFileFrame
 from service.newAccount import AddGui
 from service.passwordFrame import PasswordFrame
 from service.updateAccount import UpdateGui
@@ -33,9 +35,9 @@ class Gui:
         options, selected_option = drop_func()
         self.menubar = Menu(self.master)
         self.menubar.add_command(label="首页", command=self.reload)
-        self.menubar.add_command(label="导入",)
+        self.menubar.add_command(label="导入", command=self.importFile)
         self.menubar.add_command(label="导出", command=self.export)
-        self.menubar.add_command(label="关于",)
+        self.menubar.add_command(label="关于", command=self.bout)
         self.master.config(menu=self.menubar)
         self.frame = tk.Frame(self.master)
         self.entry = Entry(self.frame, width=20, )
@@ -195,10 +197,27 @@ class Gui:
         passwordFrame.master.mainloop()
 
     def export(self):
+        root = tk.Tk()
+        root.withdraw()
+        self.master.iconbitmap("./image/account.ico")
+        Folderpath = filedialog.asksaveasfilename(initialdir="/", title="保存文件", initialfile="account.csv",
+                                                  filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
         accounts = self.db.query_all()
-        with open("account.csv", "w", newline='') as csvfile:
+        with open(Folderpath, "w", newline='') as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(["id", "web_name", "account", "password", "url", "note", "create_time", "update_time", "state"])
             writer.writerows(accounts)
 
+    def importFile(self):
+        root = tk.Tk()
+        root.withdraw()
+        self.master.iconbitmap("./image/account.ico")
+        Folderpath = filedialog.askopenfilename(initialdir="/", title="打开",
+                                                filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
 
+        importFile = ImportFileFrame(Folderpath, self.master)
+        importFile.master.mainloop()
+        self.reload()
+
+    def bout(self):
+        about = About(self.master)
+        about.master.mainloop()

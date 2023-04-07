@@ -21,13 +21,11 @@ def check_aes():
         userInit()  # 默认账号密码
 
 
-# 打包命令： pyinstaller -D .\account.py -i .\image\account.ico -w -p .\accountMapper.py -p .\login.py -p .\mainFrame.py -p  .\newAccount.py  -p .\tkConfig.py -p .\updateAccount.py  -p framUtil.py -p message.py
-"""
-TODO:
-    1、启动密钥生成得时候，增加  已有密钥 + 确认按钮  用于更新应用频繁得数据导入
-    2、csv 格式导出，只处理account sql 
-    3、csv 格式导入，只处理account sql 追加插入数据 需要验证原密钥
-"""
+# 打包命令：pyinstaller -D .\account.py -i .\image\account.ico -w -p .\dao\accountMapper.py -p .\dao\baseMapper.py
+# -p .\service\keyFrame.py -p .\service\login.py -p .\service\mainFrame.py -p .\service\newAccount.py
+# -p .\service\passwordFrame.py -p .\service\updatePassword.py  -p .\service\updateAccount.py -p .\config\tkConfig.py
+# -p .\utils\framUtil.py -p .\utils\message.py -p .\utils\myAES.py  -p .\utils\MyRSA.py -p .\utils\reatest.py
+
 if __name__ == '__main__':
 
     # 是否第一次登录，生成密钥

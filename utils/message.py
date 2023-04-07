@@ -57,3 +57,7 @@ def haveKey():
 
 def emptyKey():
     tkinter.messagebox.showinfo(title="提示", message="密钥为空")
+
+
+def importSuccess():
+    tkinter.messagebox.showinfo(title="提示", message="导入成功")

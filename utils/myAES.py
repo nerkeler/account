@@ -2,7 +2,6 @@
 import base64
 import hashlib
 
-
 from Crypto.Cipher import AES
 
 
@@ -56,3 +55,8 @@ def gen_key():
         key = f.read().strip()
         myKey = md5_mix(key)
     return myKey
+
+
+def encode_key(key, password):
+    myKey = md5_mix(key)
+    return aes_decode(myKey, password)
