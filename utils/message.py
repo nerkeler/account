@@ -18,6 +18,18 @@ def deleteSuccess():
     tkinter.messagebox.showinfo(title="提示", message="删除成功！")
 
 
+def deleteFailed():
+    tkinter.messagebox.showinfo(title="提示", message="删除失败！")
+
+
+def importSuccess():
+    tkinter.messagebox.showinfo(title="提示", message="导入成功！")
+
+
+def importFailed(e):
+    tkinter.messagebox.showinfo(title="提示", message=f"导入失败！{e}")
+
+
 def loginSuccess():
     tkinter.messagebox.showinfo(title="提示", message="登录成功！")
 
@@ -47,7 +59,7 @@ def copyPwd():
 
 
 def makeSure():
-    return tkinter.messagebox.askokcancel(title="删除账户", message="确定或取消")
+    return tkinter.messagebox.askokcancel(title="删除账户", message="是否删除当前选中账户？")
 
 
 def haveKey():

@@ -39,6 +39,14 @@ class Db:
         print(f"插入一条数据：{data}")
         return row
 
+    def import_account(self, data):
+        row = self.cur.execute(
+            "INSERT INTO account(web_name,url, account, password, note, create_time, update_time) VALUES(?,?,?,?,?,datetime('now'),datetime('now'))",
+            data)
+        self.connect.commit()
+        print(f"插入一条数据：{data}")
+        return row
+
     def update(self, account):
         row = self.cur.execute("UPDATE account set web_name=?,account=?, password=?,url=?,note=? where id=?",
                                (account[1], account[2], account[3], account[4], account[5], account[0]))
@@ -51,6 +59,12 @@ class Db:
 
     def query_all(self):
         query_all = "SELECT id,web_name,account,password,url,note FROM account where state='1'"
+        accounts = self.cur.execute(query_all).fetchall()
+        print("执行查询所有数据")
+        return accounts
+
+    def export(self):
+        query_all = "SELECT web_name,url,account,password,note FROM account where state='1'"
         accounts = self.cur.execute(query_all).fetchall()
         print("执行查询所有数据")
         return accounts

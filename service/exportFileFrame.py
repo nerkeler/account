@@ -7,7 +7,7 @@ from utils.message import importSuccess
 from utils.myAES import encode_key, encode_password
 
 
-class ImportFileFrame:
+class ExportFileFrame:
 
     def __init__(self, filePath, root):
         self.master = tk.Toplevel(master=root)
@@ -41,12 +41,12 @@ class ImportFileFrame:
 
     def confirm(self):
         db = Db()
-        key = self.entry.get()
+        # key = self.entry.get()
         with open(self.path, "r", encoding="utf-8") as csvfile:
             reader = csv.reader(csvfile)
             for i in reader:
                 i[3] = encode_password(encode_key(key, i[3]))
-                db.insert_account(i[1:])
+                db.import_account(i)
         importSuccess()
         self.master.quit()
         self.master.destroy()

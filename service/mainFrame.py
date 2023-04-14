@@ -1,5 +1,6 @@
 import csv
 import sys
+from sqlite3 import ProgrammingError
 from tkinter import *
 import tkinter as tk
 from tkinter import filedialog
@@ -7,13 +8,13 @@ from tkinter.ttk import *
 
 from dao.accountMapper import Db
 from service.about import About
-from service.importFileFrame import ImportFileFrame
+from service.exportFileFrame import ExportFileFrame
 from service.newAccount import AddGui
 from service.passwordFrame import PasswordFrame
 from service.updateAccount import UpdateGui
 
 from utils.framUtil import *
-from utils.message import noAccount, deleteSuccess, makeSure
+from utils.message import noAccount, deleteSuccess, makeSure, deleteFailed, importFailed, importSuccess
 from utils.myAES import decode_password
 
 
@@ -30,20 +31,21 @@ class Gui:
         self.master.withdraw()  # 隐藏闪烁
         self.master.update()
         self.master.title("账户密码管理器")
-        self.master.resizable(False, False)
+        # self.master.resizable(False, False)
         self.master.iconbitmap("./image/account.ico")
         options, selected_option = drop_func()
         self.menubar = Menu(self.master)
         self.menubar.add_command(label="首页", command=self.reload)
         self.menubar.add_command(label="导入", command=self.importFile)
+        self.menubar.add_command(label="chrome导入", command=self.chromeImportFile)
         self.menubar.add_command(label="导出", command=self.export)
         self.menubar.add_command(label="关于", command=self.bout)
         self.master.config(menu=self.menubar)
-        self.frame = tk.Frame(self.master)
-        self.entry = Entry(self.frame, width=20, )
-        self.add_button = Button(self.frame, text="新增", command=self.add_account)
-        self.treeFrame = tk.Frame(self.master, bd=8)
+        self.frame = Frame(self.master, relief="solid")
+        self.treeFrame = Frame(self.master, borderwidth=8)
         self.tree = Treeview(self.treeFrame, height=50, columns=("网站", "账号", "密码", "网址"))
+        self.VScroll1 = Scrollbar(self.treeFrame, orient='vertical', command=self.tree.yview)
+        self.tree.config(yscrollcommand=self.VScroll1.set)
         self.db = Db()
         self.event = None
         self.tree.bind("<Button-1>", self.showId)
@@ -51,8 +53,10 @@ class Gui:
         self.tree.bind("<Button-3>", self.rightButton)
         self.tree.tag_configure("evenColor", background="lightblue")
         self.dropDown = Combobox(self.frame, textvariable=selected_option, values=options, width=10, state="readonly")
+        self.entry = Entry(self.frame, width=22)
         self.select_button = Button(self.frame, text="查询", command=self.query)
         self.see_button = Button(self.frame, text="查看", command=lambda: self.doubleClick(self.event))
+        self.add_button = Button(self.frame, text="新增", command=self.add_account)
         self.delete_button = Button(self.frame, text="删除", command=self.delete_item)
         self.generate_button = Button(self.frame, text="随机密码", command=self.generate_password)
         self.master.protocol("WM_DELETE_WINDOW", self.login_break)
@@ -113,16 +117,22 @@ class Gui:
     def delete_item(self):
 
         if makeSure():
+            flag = True
             if self.event is not None:
                 print("开始删除")
                 e = self.event.widget
-                iid = e.identify("item", self.event.x, self.event.y)
-                state = e.item(iid, "text")
-                print(state)
-                row = self.db.delete_one(state).rowcount
-                if row == 1:
+                selected_items = self.tree.selection()
+                for iid in selected_items:
+                    state = e.item(iid, "text")
+                    row = self.db.delete_one(state).rowcount
+                    if row != 1:
+                        flag = False
+
+                if flag:
                     deleteSuccess()
-                    self.reload()
+                else:
+                    deleteFailed()
+                self.reload()
         else:
             pass
 
@@ -161,6 +171,7 @@ class Gui:
         self.generate_button.pack(side=LEFT, padx=8, pady=8)
         self.treeFrame.pack()
         self.tree.pack()
+        self.VScroll1.pack(side=RIGHT, fill=Y)
 
     def show(self):
         screen_width = self.master.winfo_screenwidth()
@@ -202,23 +213,47 @@ class Gui:
         self.master.iconbitmap("./image/account.ico")
         Folderpath = filedialog.asksaveasfilename(initialdir="/", title="保存文件", initialfile="account.csv",
                                                   filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
-        accounts = self.db.query_all()
+        # if Folderpath is not None and Folderpath != "":
+        #     importFile = ImportFileFrame(Folderpath, self.master)
+        #     importFile.master.mainloop()
+        accounts = list(self.db.export())
+        exportList = []
+        for account in accounts:
+            account = list(account)
+            account[3] = decode_password(account[3])
+            exportList.append(account)
         with open(Folderpath, "w", newline='') as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerows(accounts)
+            writer.writerow(["name", "url", "username", "password", "note"])
+            writer.writerows(exportList)
 
     def importFile(self):
         root = tk.Tk()
         root.withdraw()
         root.title("数据导入")
         root.iconbitmap("./image/account.ico")
-        Folderpath = filedialog.askopenfilename(initialdir="/", title="数据导入",
+        FolderPath = filedialog.askopenfilename(initialdir="/", title="数据导入",
                                                 filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
-        if Folderpath is not None and Folderpath != "":
-            importFile = ImportFileFrame(Folderpath, self.master)
-            importFile.master.mainloop()
-            self.reload()
+        try:
+            with open(FolderPath, "r", encoding="utf-8") as csvfile:
+                reader = csv.reader(csvfile)
+                next(reader)   # 跳过第一行
+                for i in reader:
+                    password = i[3]
+                    i[3] = encode_password(password)
+                    row = self.db.import_account(i)
+                    if row != 1:
+                        importFailed("导出中断")
+                    else:
+                        importSuccess()
+        except ProgrammingError as e:
+            importFailed(e)
+
+        self.reload()
 
     def bout(self):
         about = About(self.master)
         about.master.mainloop()
+
+    def chromeImportFile(self):
+        self.importFile()
