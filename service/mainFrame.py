@@ -2,13 +2,12 @@ import csv
 import sys
 from sqlite3 import ProgrammingError
 from tkinter import *
-import tkinter as tk
 from tkinter import filedialog
+import tkinter as tk
 from tkinter.ttk import *
 
 from dao.accountMapper import Db
 from service.about import About
-from service.exportFileFrame import ExportFileFrame
 from service.newAccount import AddGui
 from service.passwordFrame import PasswordFrame
 from service.updateAccount import UpdateGui
@@ -31,30 +30,35 @@ class Gui:
         self.master.withdraw()  # 隐藏闪烁
         self.master.update()
         self.master.title("账户密码管理器")
-        # self.master.resizable(False, False)
+        self.master.resizable(False, False)
         self.master.iconbitmap("./image/account.ico")
         options, selected_option = drop_func()
         self.menubar = Menu(self.master)
+        self.importMenu = Menu(self.menubar, tearoff=False)
         self.menubar.add_command(label="首页", command=self.reload)
-        self.menubar.add_command(label="导入", command=self.importFile)
-        self.menubar.add_command(label="chrome导入", command=self.chromeImportFile)
+        self.menubar.add_cascade(label="导入", menu=self.importMenu)
+        self.importMenu.add_command(label="本地导入", command=self.importFile)
+        self.importMenu.add_command(label="chrome导入", command=self.chromeImportFile)
+        self.importMenu.add_command(label="edge导入", command=self.chromeImportFile)
         self.menubar.add_command(label="导出", command=self.export)
         self.menubar.add_command(label="关于", command=self.bout)
         self.master.config(menu=self.menubar)
         self.frame = Frame(self.master, relief="solid")
-        self.treeFrame = Frame(self.master, borderwidth=8)
+        self.treeFrame = Frame(self.master, borderwidth=8, relief="solid")
         self.tree = Treeview(self.treeFrame, height=50, columns=("网站", "账号", "密码", "网址"))
-        self.VScroll1 = Scrollbar(self.treeFrame, orient='vertical', command=self.tree.yview)
+        self.VScroll1 = Scrollbar(self.treeFrame,  command=self.tree.yview)
         self.tree.config(yscrollcommand=self.VScroll1.set)
+        self.VScroll1.config(orient="vertical")
         self.db = Db()
         self.event = None
         self.tree.bind("<Button-1>", self.showId)
         self.tree.bind("<Double-Button-1>", self.doubleClick)
-        self.tree.bind("<Button-3>", self.rightButton)
+        # self.tree.bind("<Button-3>", self.rightButton)
         self.tree.tag_configure("evenColor", background="lightblue")
         self.dropDown = Combobox(self.frame, textvariable=selected_option, values=options, width=10, state="readonly")
-        self.entry = Entry(self.frame, width=22)
-        self.select_button = Button(self.frame, text="查询", command=self.query)
+        self.entry = Entry(self.frame, width=27)
+        self.entry.bind("<Return>", self.query)
+        self.select_button = Button(self.frame, text="查询", command=lambda: self.query(event=""))
         self.see_button = Button(self.frame, text="查看", command=lambda: self.doubleClick(self.event))
         self.add_button = Button(self.frame, text="新增", command=self.add_account)
         self.delete_button = Button(self.frame, text="删除", command=self.delete_item)
@@ -74,7 +78,7 @@ class Gui:
         insert_all(self.tree, accounts)
 
     # 查询函数
-    def query(self):
+    def query(self, event):
         print("query开始执行")
         if self.dropDown.get() == "账户编号":
             index = self.entry.get()
@@ -143,7 +147,7 @@ class Gui:
     def method_name(self):
         menu = Menu(self.master, tearoff=False)
         menu.add_command(label="添加", command=self.add_account)
-        menu.add_command(label="删除", command=self.delete_one)
+        # menu.add_command(label="删除", command=self.delete_one)
         menu.add_command(label="查看", command=self.doubleClick)
         menu.add_command(label="退出", command=self.master.quit)
         return menu
@@ -161,7 +165,7 @@ class Gui:
         self.reload()
 
     def pack(self):
-        self.frame.pack()
+        self.frame.pack(side="top", )
         self.dropDown.pack(side=LEFT, padx=8, pady=8)
         self.entry.pack(side=LEFT, padx=10, pady=10)
         self.select_button.pack(side=LEFT, padx=8, pady=8)
@@ -169,14 +173,14 @@ class Gui:
         self.add_button.pack(side=LEFT, padx=8, pady=8)
         self.delete_button.pack(side=LEFT, padx=8, pady=8)
         self.generate_button.pack(side=LEFT, padx=8, pady=8)
-        self.treeFrame.pack()
-        self.tree.pack()
-        self.VScroll1.pack(side=RIGHT, fill=Y)
+        self.treeFrame.pack(side="top", pady=5)
+        self.tree.pack(side="left", fill="y")
+        self.VScroll1.pack(side="right", fill="y")
 
     def show(self):
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
-        w = 820
+        w = 850
         h = 548
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
@@ -234,6 +238,8 @@ class Gui:
         root.iconbitmap("./image/account.ico")
         FolderPath = filedialog.askopenfilename(initialdir="/", title="数据导入",
                                                 filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
+        if FolderPath is None or FolderPath == '':
+            return
         try:
             with open(FolderPath, "r", encoding="utf-8") as csvfile:
                 reader = csv.reader(csvfile)

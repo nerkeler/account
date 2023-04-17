@@ -1,5 +1,4 @@
 import os
-import uuid
 from config import tkConfig
 from service.keyFrame import KeyFrame
 from service.login import LoginForm
@@ -27,9 +26,12 @@ def check_aes():
 # -p .\utils\framUtil.py -p .\utils\message.py -p .\utils\myAES.py  -p .\utils\MyRSA.py -p .\utils\reatest.py
 """
 TODO:
-    1、导出验证密钥和密码
+    1、导出验证密钥和密码  待完成
     2、导入标签分三个  本地导入、chrome导入、edge导入和验证
     3、完成chrome导入、edge导入
+    4、支付宝打赏
+    已完成：
+        滚动条适配
 """
 if __name__ == '__main__':
 

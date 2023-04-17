@@ -28,7 +28,7 @@ class About:
 
 
         # 创建一个标签，用于显示标题
-        title_label = Label(self.master, text="本地密码管理器", font=("Helvetica", 20))
+        title_label = Label(self.master, text="本地密码管理器", font=("微软雅黑", 20))
         title_label.pack(pady=20)
 
         # 创建一个文本框，用于显示段落内容
