@@ -44,7 +44,15 @@ class Db:
             "INSERT INTO account(web_name,url, account, password, note, create_time, update_time) VALUES(?,?,?,?,?,datetime('now'),datetime('now'))",
             data)
         self.connect.commit()
-        print(f"插入一条数据：{data}")
+        # print(f"插入一条数据：{data}")
+        return row
+
+    def edge_import(self, data):
+        row = self.cur.execute(
+            "INSERT INTO account(web_name,url, account, password, create_time, update_time) VALUES(?,?,?,?,datetime('now'),datetime('now'))",
+            data)
+        self.connect.commit()
+        # print(f"插入一条数据：{data}")
         return row
 
     def update(self, account):

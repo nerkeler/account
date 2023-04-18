@@ -38,6 +38,10 @@ def loginError():
     tkinter.messagebox.showinfo(title="提示", message="密码错误，请重试！ ")
 
 
+def keyOrPasswordError():
+    tkinter.messagebox.showinfo(title="提示", message="密钥或密码错误，请重试！ ")
+
+
 def pwdNotEqual():
     tkinter.messagebox.showinfo(title="提示", message="两次密码输入不一致")
 

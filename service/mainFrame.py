@@ -1,5 +1,6 @@
 import csv
 import sys
+import ctypes
 from sqlite3 import ProgrammingError
 from tkinter import *
 from tkinter import filedialog
@@ -7,7 +8,8 @@ import tkinter as tk
 from tkinter.ttk import *
 
 from dao.accountMapper import Db
-from service.about import About
+from service.about import FunctionIntroPag
+from service.exportFileFrame import ExportFileFrame
 from service.newAccount import AddGui
 from service.passwordFrame import PasswordFrame
 from service.updateAccount import UpdateGui
@@ -26,12 +28,18 @@ def drop_func():
 
 class Gui:
     def __init__(self):
+
         self.master = tk.Tk()
         self.master.withdraw()  # 隐藏闪烁
         self.master.update()
         self.master.title("账户密码管理器")
         self.master.resizable(False, False)
         self.master.iconbitmap("./image/account.ico")
+        # ScaleFactor = ctypes.windll.shcore.GetScaleFactorForDevice(0)
+        # ctypes.windll.shcore.SetProcessDpiAwareness(1)
+        # # # 设置缩放因子
+        # self.master.tk.call('tk', 'scaling',  ScaleFactor  / 72)
+        # self.ft = tk.font.Font(family='Consolas', size=13)  # 设置出文本框字体
         options, selected_option = drop_func()
         self.menubar = Menu(self.master)
         self.importMenu = Menu(self.menubar, tearoff=False)
@@ -39,14 +47,14 @@ class Gui:
         self.menubar.add_cascade(label="导入", menu=self.importMenu)
         self.importMenu.add_command(label="本地导入", command=self.importFile)
         self.importMenu.add_command(label="chrome导入", command=self.chromeImportFile)
-        self.importMenu.add_command(label="edge导入", command=self.chromeImportFile)
+        self.importMenu.add_command(label="edge导入", command=self.edgeImportFile)
         self.menubar.add_command(label="导出", command=self.export)
         self.menubar.add_command(label="关于", command=self.bout)
         self.master.config(menu=self.menubar)
         self.frame = Frame(self.master, relief="solid")
         self.treeFrame = Frame(self.master, borderwidth=8, relief="solid")
         self.tree = Treeview(self.treeFrame, height=50, columns=("网站", "账号", "密码", "网址"))
-        self.VScroll1 = Scrollbar(self.treeFrame,  command=self.tree.yview)
+        self.VScroll1 = Scrollbar(self.treeFrame, command=self.tree.yview)
         self.tree.config(yscrollcommand=self.VScroll1.set)
         self.VScroll1.config(orient="vertical")
         self.db = Db()
@@ -212,24 +220,8 @@ class Gui:
         passwordFrame.master.mainloop()
 
     def export(self):
-        root = tk.Tk()
-        root.withdraw()
-        self.master.iconbitmap("./image/account.ico")
-        Folderpath = filedialog.asksaveasfilename(initialdir="/", title="保存文件", initialfile="account.csv",
-                                                  filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
-        # if Folderpath is not None and Folderpath != "":
-        #     importFile = ImportFileFrame(Folderpath, self.master)
-        #     importFile.master.mainloop()
-        accounts = list(self.db.export())
-        exportList = []
-        for account in accounts:
-            account = list(account)
-            account[3] = decode_password(account[3])
-            exportList.append(account)
-        with open(Folderpath, "w", newline='') as csvfile:
-            writer = csv.writer(csvfile)
-            writer.writerow(["name", "url", "username", "password", "note"])
-            writer.writerows(exportList)
+        exportFile = ExportFileFrame(self.master)
+        exportFile.master.mainloop()
 
     def importFile(self):
         root = tk.Tk()
@@ -243,23 +235,46 @@ class Gui:
         try:
             with open(FolderPath, "r", encoding="utf-8") as csvfile:
                 reader = csv.reader(csvfile)
-                next(reader)   # 跳过第一行
+                next(reader)  # 跳过第一行
                 for i in reader:
                     password = i[3]
                     i[3] = encode_password(password)
                     row = self.db.import_account(i)
-                    if row != 1:
-                        importFailed("导出中断")
-                    else:
-                        importSuccess()
+
+                importSuccess()
         except ProgrammingError as e:
             importFailed(e)
 
         self.reload()
 
     def bout(self):
-        about = About(self.master)
-        about.master.mainloop()
+
+        function_intro_page = FunctionIntroPag(self.master)
+        function_intro_page.master.mainloop()
 
     def chromeImportFile(self):
         self.importFile()
+
+    def edgeImportFile(self):
+        root = tk.Tk()
+        root.withdraw()
+        root.title("数据导入")
+        root.iconbitmap("./image/account.ico")
+        FolderPath = filedialog.askopenfilename(initialdir="/", title="数据导入",
+                                                filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
+        if FolderPath is None or FolderPath == '':
+            return
+        try:
+            with open(FolderPath, "r", encoding="utf-8") as csvfile:
+                reader = csv.reader(csvfile)
+                next(reader)  # 跳过第一行
+                for i in reader:
+                    password = i[3]
+                    i[3] = encode_password(password)
+                    row = self.db.edge_import(i).fetchone()
+
+                importSuccess()
+        except ProgrammingError as e:
+            importFailed(e)
+
+        self.reload()
