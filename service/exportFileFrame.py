@@ -5,7 +5,7 @@ from tkinter import filedialog
 from dao.accountMapper import Db
 from dao.baseMapper import BaseDb
 from utils.framUtil import encode_user
-from utils.message import importSuccess, keyOrPasswordError
+from utils.message import exportSuccess, keyOrPasswordError
 from utils.myAES import encode_key, encode_password, decode_password
 
 
@@ -15,7 +15,7 @@ class ExportFileFrame:
         self.master = tk.Toplevel(master=root)
         self.master.withdraw()  # 隐藏闪烁
         self.master.update()
-        self.master.title("数据导入")
+        self.master.title("数据导出")
         self.master.resizable(False, False)
         self.master.iconbitmap("./image/account.ico")
         screen_width = self.master.winfo_screenwidth()
@@ -70,17 +70,15 @@ class ExportFileFrame:
                     account[3] = decode_password(account[3])
                     exportList.append(account)
                 if FolderPath is not None and FolderPath != '':
-                    with open(FolderPath, "w", newline='') as csvfile:
+                    with open(FolderPath, "w", newline='', encoding="utf-8") as csvfile:
                         writer = csv.writer(csvfile)
                         writer.writerow(["name", "url", "username", "password", "note"])
                         writer.writerows(exportList)
-                importSuccess()
+                exportSuccess()
         else:
             keyOrPasswordError()
             self.entry.delete(0, tk.END)
             self.entry2.delete(0, tk.END)
-
-
 
     def login_break(self):
         self.master.quit()

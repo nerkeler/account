@@ -258,9 +258,9 @@ class Gui:
     def edgeImportFile(self):
         root = tk.Tk()
         root.withdraw()
-        root.title("数据导入")
+        root.title("Edge数据导入")
         root.iconbitmap("./image/account.ico")
-        FolderPath = filedialog.askopenfilename(initialdir="/", title="数据导入",
+        FolderPath = filedialog.askopenfilename(initialdir="/", title="Edge数据导入",
                                                 filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
         if FolderPath is None or FolderPath == '':
             return

@@ -11,7 +11,7 @@ class FunctionIntroPag:
         self.master.withdraw()  # 隐藏闪烁
         self.master.update()
         self.master.title("关于")
-        # self.master.resizable(False, False)
+        self.master.resizable(False, False)
         self.master.iconbitmap("./image/account.ico")
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
@@ -35,13 +35,13 @@ class FunctionIntroPag:
 
         # 创建一个文本框，用于显示段落内容
         # 创建一个文本框，用于显示段落内容
-        paragraph_text = "本地密码管理器用于管理您的账号信息，避免遗忘，相对其他账号管理器，有以下特点：\n\n" \
+        paragraph_text = "本地密码管理器用于管理您的账号信息，特点：\n\n" \
                          "1. 完全离线，密码加密存储，安全性高\n" \
                          "2. 界面简单，功能完善，易上手\n" \
                          "3. 功能稳定，持续开发，不定时更新\n\n\n" \
-                         "您的支持是我坚持下去的动力--------------------------->>>\n\n"\
+                         "您的支持是我坚持下去的动力\n\n"\
                          "BUG反馈：\n" \
-                         "\t微信：nerkeler\t\tQQ:2739038007\n"
+                         "\t微信：nerkeler\t\tQQ:2739038007\t\t\n"
         self.paragraph_label = Label(self.frame, text=paragraph_text, font=("微软雅黑", 12), justify="left")
         self.paragraph_label.pack(pady=10, side=LEFT)
 
