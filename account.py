@@ -11,7 +11,7 @@ def check_aes():
     # 生成密钥
     if not os.path.exists("resource"):
         os.mkdir("resource")
-    if not os.path.exists("resource/aesKey"):
+    if not (os.path.exists("resource/public.pem") and os.path.exists("resource/private.pem")):
         if haveKey() == "yes":
             keyFrame = KeyFrame(True)
         else:
@@ -25,13 +25,8 @@ def check_aes():
 # -p .\service\passwordFrame.py -p .\service\updatePassword.py  -p .\service\updateAccount.py -p .\config\tkConfig.py
 # -p .\utils\framUtil.py -p .\utils\message.py -p .\utils\myAES.py  -p .\utils\MyRSA.py -p .\utils\reatest.py
 """
-TODO:
-    1、导出验证密钥和密码  待完成
-    2、导入标签分三个  本地导入、chrome导入、edge导入和验证
-    3、完成chrome导入、edge导入
-    4、支付宝打赏
-    已完成：
-        滚动条适配
+        改用非对称加密
+
 """
 if __name__ == '__main__':
 
@@ -40,7 +35,6 @@ if __name__ == '__main__':
 
     login = LoginForm()
     login.master.mainloop()  # 登录验证
-
     gui = Gui()
     tkConfig.styles(gui)  # 设置样式
     gui.showAll()  # 展示首页

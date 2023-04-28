@@ -1,12 +1,13 @@
+# -*- coding: utf-8 -*-
+import base64
 import csv
+import logging
 import sys
-import ctypes
 from sqlite3 import ProgrammingError
 from tkinter import *
 from tkinter import filedialog
 import tkinter as tk
 from tkinter.ttk import *
-
 from dao.accountMapper import Db
 from service.about import FunctionIntroPag
 from service.exportFileFrame import ExportFileFrame
@@ -15,9 +16,11 @@ from service.passwordFrame import PasswordFrame
 from service.updateAccount import UpdateGui
 
 from utils.framUtil import *
+from utils.logUtil import setup_logging
 from utils.message import noAccount, deleteSuccess, makeSure, deleteFailed, importFailed, importSuccess
-from utils.myAES import decode_password
 
+setup_logging()
+logger = logging.getLogger('server')  # 维护一个全局日志对象
 
 def drop_func():
     options = ["网站名称", "账户编号", "网站网址"]
@@ -76,6 +79,7 @@ class Gui:
         self.delete_button = Button(self.frame, text="删除", command=self.delete_item)
         self.generate_button = Button(self.frame, text="随机密码", command=self.generate_password)
         self.master.protocol("WM_DELETE_WINDOW", self.login_break)
+        self.myRSA = MyRSA()
         self.tk_init()
 
     def tk_init(self):
@@ -85,13 +89,13 @@ class Gui:
         self.column()  # 设置TreeView column
 
     def showAll(self):
-        print("首页查询展示")
+        logger.info("首页查询展示")
         accounts = self.db.query_all()
         insert_all(self.tree, accounts)
 
     # 查询函数
     def query(self, event):
-        print("query开始执行")
+        logger.info("开始执行查询")
         if self.dropDown.get() == "账户编号":
             index = self.entry.get()
             if index.isdigit():
@@ -123,7 +127,11 @@ class Gui:
             if state is not None and state != '':
                 update = UpdateGui(self.master)
                 item = list(self.db.query_one(state).fetchone())
-                item[3] = decode_password(item[3])
+                print(item[3])
+                password = base64.b64decode(item[3])
+                print(password)
+                password = self.myRSA.decrypt(password, PRIVATE)
+                item[3] = password
                 update.tk_init(item)
         self.reload()
 
@@ -170,10 +178,10 @@ class Gui:
 
     # 添加按钮功能函数
     def add_account(self):
-        print("开始新增账号")
+        logger.info("开始新增账号")
         add_gui = AddGui(self.master)
         add_gui.tk_init()
-        print("新增框已退出，开始查询插入的数据")
+        logger.info("新增框已退出，开始查询插入的数据")
         self.reload()
 
     def pack(self):
@@ -214,7 +222,7 @@ class Gui:
         self.tree.heading("#4", text="网址")
 
     def login_break(self):
-        print("手动关闭窗口了")
+        logger.info("手动关闭窗口了")
         self.master.destroy()
         self.master.quit()
         sys.exit()

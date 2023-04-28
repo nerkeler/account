@@ -1,0 +1,48 @@
+version: 1
+disable_existing_loggers: true
+
+# 日志信息格式化输出配置
+formatters:
+    simple:
+        format: '%(levelname)s %(filename)s %(lineno)d %(message)s'
+    verbose:
+        format: '%(levelname)s %(asctime)s -Loc %(filename)s -Row %(lineno)d -%(name)s %(message)s'
+
+# 日志信息处理器配置
+handlers:
+    console:
+        class: logging.StreamHandler
+        level: DEBUG
+        formatter: simple
+        stream: ext://sys.stdout
+
+    # 错误日志单独处理
+    error_file_handler:
+        class: logging.handlers.RotatingFileHandler
+        level: ERROR
+        formatter: verbose
+        filename: ./logs/errors.log   # 错误日志文件存储位置
+        maxBytes: 10485760            # 每个日志文件最大 10MB
+        backupCount: 20               # 如果文件满了, 自动扩充, 最多保留 20 个日志文件
+        encoding: utf8
+
+    server_file_handler:
+      class: logging.handlers.RotatingFileHandler
+      level: INFO                     # 只在文件中记录INFO级别及以上的log
+      formatter: verbose
+      filename: ./logs/server.log    # 项目日志文件, 记录所有日志信息
+      maxBytes: 10485760             # 10MB
+      backupCount: 30
+      encoding: utf8
+
+# 根日志器
+root:
+    level: DEBUG
+    handlers: [console]
+
+# 日志器
+loggers:
+    server:
+        level: DEBUG      # 允许打印 DEBUG 及以上log
+        handlers: [server_file_handler, error_file_handler]
+        propagate: True   # 设为 False则禁止将日志消息传递给父级记录器的处理程序中

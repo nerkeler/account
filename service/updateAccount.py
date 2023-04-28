@@ -1,7 +1,8 @@
 from tkinter import *
 import tkinter as tk
-
+from utils.framUtil import PUBLIC
 from dao.accountMapper import Db
+from utils.MyRSA import MyRSA
 from utils.message import updateSuccess
 from tkinter.ttk import *
 
@@ -75,14 +76,14 @@ class UpdateGui:
         self.btn1.pack(side=LEFT, padx=8, pady=8)
         self.btn2 = Button(self.frame6, text="显示密码", command=self.show)
         self.btn2.pack(side=LEFT, padx=8, pady=8)
-
+        self.myRSA = MyRSA()
         self.create(account)
         self.master.mainloop()
 
     def update_account(self):
         driver = Db()
         password = self.entry3.get()
-        result = encode_password(password)
+        result = self.myRSA.encrypt(password, PUBLIC)
         data = [self.account[0], self.entry1.get(), self.entry2.get(), result, self.entry4.get(), self.entry5.get()]
         row = driver.update(data)
         print(f"row.rowcount: {row.rowcount}")

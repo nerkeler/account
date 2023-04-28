@@ -1,12 +1,18 @@
+import ctypes
+import logging
+import sys
 import tkinter as tk
 from tkinter import LEFT, RIGHT, END
 from tkinter.ttk import *
 
 from dao.baseMapper import BaseDb
 from service.updatePassword import UpdatePwd
-from utils.framUtil import encode_user
+from utils.bcrypt_util import check_password
+from utils.logUtil import setup_logging
 from utils.message import loginError
-import sys
+
+setup_logging()
+logger = logging.getLogger('server')  # 维护一个全局日志对象
 
 
 class LoginForm:
@@ -18,6 +24,10 @@ class LoginForm:
         self.master.title("登录")
         self.master.resizable(False, False)
         self.master.iconbitmap("./image/account.ico")
+        ctypes.windll.shcore.SetProcessDpiAwareness(1)
+        # 调用api获得当前的缩放因子
+        ScaleFactor = ctypes.windll.shcore.GetScaleFactorForDevice(0)
+        self.master.tk.call('tk', 'scaling', ScaleFactor / 75)
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
         w = 300
@@ -40,7 +50,7 @@ class LoginForm:
 
         self.username_entry = Entry(nameLabel, )
         self.username_entry.insert(END, "admin")
-        self.username_entry.config(state="readonly")
+        # self.username_entry.config(state="readonly")
         self.username_entry.pack(side=RIGHT)
         nameLabel.pack(pady=10)
 
@@ -66,17 +76,16 @@ class LoginForm:
     def login(self, event):
         username = self.username_entry.get()
         password = self.password_entry.get()
-        print(f"login_button 运行了username:{username}, password{password}")
-        password = encode_user(password)
-
         result = self.base.queryOne("1").fetchone()
 
-        if username == result[1] and password == result[2]:
+        if check_password(username, result[1]) and check_password(password, result[2]):
+            logger.info(f"登录成功,登陆者：{username}")
             self.master.destroy()
             self.master.quit()
 
         else:
             loginError()
+            logging.warning("账号或密码错误，登录失败")
             self.password_entry.delete(0, END)
 
     def login_break(self):

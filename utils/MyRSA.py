@@ -1,4 +1,8 @@
-import rsa, os
+import os
+import rsa
+
+PUBLIC = "public.pem"
+PRIVATE = "private.pem"
 
 
 class MyRSA:
@@ -6,33 +10,33 @@ class MyRSA:
         # 生成公钥，私钥
         self.public_key, self.private_key = rsa.newkeys(nbits=512)
 
-    def save_rsa(self, public_key_filename, private_key_filename, save_path):
+    def save_rsa(self, save_path):
         """
         保存秘钥文件
         """
-        with open(os.path.join(save_path, public_key_filename), "wb") as f:
+        with open(os.path.join(save_path, PUBLIC), "wb") as f:
             f.write(self.public_key.save_pkcs1())
-        with open(os.path.join(save_path, private_key_filename), "wb") as f:
+        with open(os.path.join(save_path, PRIVATE), "wb") as f:
             f.write(self.private_key.save_pkcs1())
 
-    def read_rsa_public(self, public_key_filename):
+    def read_rsa_public(self):
         """
         读取rsa公钥
         :param public_key_filename: rsa 公钥文件地址
         :return: 公钥
         """
-        with open(public_key_filename, 'rb') as publickfile:
+        with open(PUBLIC, 'rb') as publickfile:
             pub = publickfile.read()
             pubkey = rsa.PublicKey.load_pkcs1(pub)
         return pubkey
 
-    def read_rsa_private(self, private_key_filename):
+    def read_rsa_private(self):
         """
         读取rsa私钥
         :param private_key_filename: rsa 私钥文件地址
         :return: 私钥
         """
-        with open(private_key_filename, 'rb') as privatefile:
+        with open(PRIVATE, 'rb') as privatefile:
             priv = privatefile.read()
             privkey = rsa.PrivateKey.load_pkcs1(priv)
         return privkey
