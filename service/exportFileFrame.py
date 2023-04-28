@@ -70,9 +70,9 @@ class ExportFileFrame:
                     account[3] = decode_password(account[3])
                     exportList.append(account)
                 if FolderPath is not None and FolderPath != '':
-                    with open(FolderPath, "w", newline='', encoding="utf-8") as csvfile:
+                    with open(FolderPath, "w", newline='', encoding="utf-8-sig") as csvfile:
                         writer = csv.writer(csvfile)
-                        writer.writerow(["name", "url", "username", "password", "note"])
+                        writer.writerow(["名称", "网址", "账号", "密码", "备注"])
                         writer.writerows(exportList)
                 exportSuccess()
         else:

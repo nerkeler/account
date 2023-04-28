@@ -11,7 +11,11 @@ class Db:
     def __init__(self):
         self.flag = False
         self.check()
-        self.connect = sqlite3.connect(f"{path1}/{path2}/{filename}")
+        self.connect = sqlite3.connect(f"{path1}/{path2}/{filename}",
+                                       detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
+                                       isolation_level=None)
+        self.connect.text_factory = str
+        self.connect.execute('PRAGMA encoding = "UTF-8"')
         self.cur = self.connect.cursor()
         self.init()
 
