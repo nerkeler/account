@@ -1,181 +1,84 @@
-## 本地密码管理器3.0
+# 密码管理器
 
-`github`地址：https://github.com/nerkeler/account.git
+该密码管理器是一个离线本地使用的工具，采用AES对称加密，保证了用户数据的安全性。它支持导入导出，也可方便地管理Chrome/Edge浏览器的密码本。
 
-最新版本蓝奏：https://wwtf.lanzoul.com/iT6Vs0sbloni
+## 功能
 
-程序默认密码：**password**
+- 添加、删除、编辑账号信息
+- 导入、导出账号信息
+- 采用AES对称加密，确保数据安全
+- 支持管理Chrome/Edge浏览器密码本
+- 随机密码生成器
 
-#### 修改点
+## 运行环境
 
-- 新增了导入导出功能，关于页面介绍（虽然没几句话）
-- bug修复
-- 子界面置顶，显示子界面时无法操作主界面
-- 增加首页，快速回到首页查询（查询条件为空也可以回到首页）
+- Python 3.8
+- Windows 7+
+- SQLite3数据库
+- Tkinter GUI框架
 
-#### 导入导出
+## 特点
 
-点击上方标题页导入导出 ，即可完成相应操作，**导入数据时需要验证原密钥**，同时主页增加了  首页、导入、导出、关于  四个标签，
+- 离线本地使用，安全性高
+- 支持导入导出数据
+- 使用AES对称加密算法保证密码安全
+- 管理Chrome/Edge浏览器密码本
+- 简单易用，操作便捷
 
-![](https://pic.imgdb.cn/item/642fd169a682492fcc570c80.png)
+## 使用说明
 
-参考导出界面
+1. 下载解压程序文件
+2. 运行`account.exe`文件
+3. 点击`新建账号`按钮添加新的账号密码信息
+4. 双击表格中的数据进行编辑或删除
+5. 点击`导出`按钮将数据导出为CSV格式文件
+6. 点击`导入`按钮选择CSV文件进行导入数据
+7. 可按需求导入并管理`Chrome/Edge密码本`浏览器密码
 
-![](https://pic.imgdb.cn/item/642fd134a682492fcc56c2dd.png)
+## 注意事项
 
+- 密码管理工具涉及到您的个人隐私，务必注意保护好您的密码库文件。
+- 密码库文件默认保存在程序所在文件夹下的`dao、resource`文件夹中，请不要删除或移动该文件夹。
+- 如果您的密码库文件意外丢失或损坏，您将无法找回里面的数据，请务必做好备份工作。
 
 
-#### 更新程序
 
-第一次打开3.0程序，会询问是否拥有密钥用于更新程序，如果你之前使用过得话，可将原密钥按照指示导入新程序
+## 更新日志
 
-![](https://pic.imgdb.cn/item/642fd283a682492fcc587e52.png)
+### v1.0
 
-点击是-------->,支持粘贴板一键粘贴
+- 实现基本的账号密码增删改查功能
+- 使用AES对称加密算法保证密码安全
 
-![](https://pic.imgdb.cn/item/642fd29ea682492fcc58a718.png)
+### v2.0
 
-点击否--------> 则会生成新密钥，请保存好密钥，确认进入下一步  ，
+- 新增随机密码功能
+- 界面样式更改
 
-![](https://pic.imgdb.cn/item/642fd2cda682492fcc58de78.png)
+### v3.0
 
-#### 新增随机密码
+- 优化程序性能，提高运行速度
+- 支持导入导出数据
+- 修复若干已知Bug
 
-可以按照自己的需求生成相应的密码规则，`ABC`/`123`/`abc`/`#$&`
+### v4.0
 
-*注：在密码长度>字符类型数的时候会补数字  如  密码长度选30  规则选`abc`  会在26个字符后再补几个数字构成随机字符*
+- 增加chrome/edge浏览器密码导入
+- 导出逻辑更改
+- 增加关于页面介绍
 
-![](https://pic.imgdb.cn/item/6424f580a682492fcc9f685c.png)
+### v4.2
 
+- 本地密码导出中文乱码修复
+- 引入日志记录
+- 优化edge/chrome 浏览器导出适配管理
 
+## 未来计划
 
-#### 关于
+- 支持更多浏览器的密码导入
+- 支持多用户管理
 
-聊胜于无，简单说一下
+## 联系方式
 
-![](https://pic.imgdb.cn/item/642fd320a682492fcc594ab8.png)
+如有任何问题或建议，欢迎发送电子邮件至：[2739038007@qq.com](2739038007@qq.com)。
 
-***更新内容如上***
-
-**========================================================================================================**
-
-#### 前言
-
-闲来无事，看到自己有很多网站的账户密码，有些网站可能打开一两次也就忘记了，下一次在输入账户密码就想不起来，这样很容易丢失账号（当然也可以保存在浏览器自带的密码管理器中），虽然市面上也有很多优秀的账户密码管理软件，一来是这些程序大都是联网运行，在提供了多端存档的同时，也将密码和账户在网络上传输，虽然实际上很安全，但是并不是绝对的安全，二来，部分优秀的程序都是订阅付费机制，就想着自己干脆写个简单的本地的账户管理器，于是就有了这个小程序
-
-先说一下优点吧，同市面上的程序比较，一个最突出的优点就是完全运行在本地，账户密码经过`AES`加密，在逻辑上可以说是非常安全的，因为你的密码不会暴漏在网络上，本地也进行了加密处理。
-
-当然缺点也很明显，一是功能不是十分完善，二是该程序使用`tkinter` 模块编写，在布局和界面展示上都显得十分简陋，好在基本的功能没有问题
-
-#### 登录
-
-![](https://pic.imgdb.cn/item/6415d3c2a682492fcc12ae16.png)
-
-第一次登陆密钥弹出框被关闭时，就进入了程序的登录界面，默认账户名admin 不可修改，默认密码为 ：**`password`**，建议第一次登陆时修改密码
-
-#### 修改密码
-
-![](https://pic.imgdb.cn/item/642fd3b4a682492fcc59f817.png)
-
-在登陆界面 点击   **改密**  进入修改密码界面，新密码要求字符数大于8位，点击**确定** 按钮即可进行密码修改，修改成功后会提示修改成功，重新登陆，如下图所示
-
-![](https://pic.imgdb.cn/item/6415d527a682492fcc1573f4.png)
-
-#### 主页面
-
-主界面略作修改
-
-![](https://pic.imgdb.cn/item/642fd169a682492fcc570c80.png)
-
-主界面共分为两个区域：
-
-- 一个是上方的功能区，提供了查询、查看、新增、删除（软删除）功能，
-- 一个是下方的账户展示区域，默认打开时按照列表展示所有账户信息
-
-##### 相关操作
-
-- 下拉框提供了  账户编号（对应下方序号列）、网站名称（对应下方网站列）、网站网址（对应下方网址列）查询条件转换
-- 文本框接受  下拉框的对应字段，**为空时默认查询所有**
-- 点击某一项账户时，**点击查看/双击当前项**  可进入当前账户查看界面，如图所示，当前页面也可以更新账户信息
-
-![](https://pic.imgdb.cn/item/6415d77da682492fcc19f7db.png)
-
-- 新增按钮会弹出新增界面，按照规定指示填写字段即可新增一条记录
-- 删除按钮  在点击某一项账户时，点击删除，即可删除当前记录（软删除，更改了当前的状态）
-
-#### 数据库
-
-数据库方面使用的时`sqlite`,一共有两张表 `account.db`(保存账户信息)、`user.db`(程序账号信息)
-
-结构如下：
-
-```
-account.db
-CREATE TABLE account
-           (id INTEGER primary key AUTOINCREMENT,
-            web_name TEXT,
-            account TEXT,
-            password TEXT,
-            url TEXT,
-            note TEXT,
-            create_time DATETIME not null,
-            update_time DATETIME not null,
-            state INTEGER DEFAULT 1
-           )
-```
-
-```
-user.db
-CREATE TABLE user
-                   (id INTEGER primary key AUTOINCREMENT,
-                    username TEXT,
-                    password TEXT,
-                    create_time DATETIME not null,
-                    update_time DATETIME not null,
-                    state INTEGER DEFAULT 1
-                   )
-```
-
-#### 补充说明
-
-忘记登陆账户密码时，可将`account.db` 文件使用数据库可视化工具打开，取出当前账户的相关信息和密码，根据密钥和加密逻辑解密当前账户的密码明文
-
-加密逻辑如下：
-
-```python
-import hashlib
-from Crypto.Cipher import AES
-
-
-def encode_password(password):
-	key = yourkey			# key 表示你的密钥 
-    
-	slot = "nerkeler"
-    encode = key + slot
-    myKey = hashlib.md5(encode.encode("utf-8")).hexdigest().__str__()[:24]
-    return aes_encode(myKey, password)
-	
-	
-def aes_decode(key, ciphertext):
-    # 将密钥填充到16的倍数
-    key = key + (16 - len(key) % 16) * '\0'
-    # 创建AES密码器对象
-    cipher = AES.new(key.encode(), AES.MODE_ECB)
-    # 解码Base64编码的密文
-    ciphertext = base64.b64decode(ciphertext)
-    # 解密
-    plaintext = cipher.decrypt(ciphertext)
-    # 去除填充字符
-    plaintext = plaintext.rstrip(b'\0')
-    return plaintext.decode()
-```
-
-
-
-
-
-#### 总结
-
-这个小程序不难，唯一复杂点的就是对密码的加密和解密了，代码写的也比较乱，有什么优化的地方大家交流一下
-
-#### 欢迎大家提出使用建议！
