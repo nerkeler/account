@@ -1,18 +1,9 @@
 import hashlib
 import tkinter.constants as constants
-import rsa
+
 from dao.baseMapper import BaseDb
-from utils.MyRSA import MyRSA
+from utils.myAES import encode_password
 from utils.bcrypt_util import encode_password
-
-myRSA = MyRSA()
-with open("./resource/public.pem", 'rb') as publickfile:
-    pub = publickfile.read()
-    PUBLIC = rsa.PublicKey.load_pkcs1(pub)
-
-with open("./resource/private.pem", 'rb') as privatefile:
-    priv = privatefile.read()
-    PRIVATE = rsa.PrivateKey.load_pkcs1(priv)
 
 
 # 插入一行数据
@@ -32,6 +23,7 @@ def delete_all(tree):
         tree.delete(item)
 
 
+# 插入一行数据
 def userInit():
     # 生成默认账号
     baseDb = BaseDb()

@@ -4,6 +4,7 @@ import tkinter.messagebox
 from tkinter.ttk import *
 from tkinter import LEFT, RIGHT, END
 from dao.baseMapper import BaseDb
+from utils.bcrypt_util import encode_password, check_password
 from utils.framUtil import encode_user
 from utils.message import updateSuccess, pwdNotEqual, pwdError, pwdTooShot, pwdUpdate
 
@@ -84,7 +85,6 @@ class UpdatePwd:
             new_password = self.new_password.get()
             confirm_password = self.confirm_password.get()
 
-            password = encode_user(old_password)
             result = self.base.queryOne("1").fetchone()
 
             if len(confirm_password) < 8 or len(new_password) < 8:  # 小于8位密码中断
@@ -98,8 +98,8 @@ class UpdatePwd:
                 self.new_password.delete(0, END)
                 self.confirm_password.delete(0, END)
                 return 0
-            if password == result[2] and confirm_password == new_password:
-                new_password = encode_user(new_password)
+            if check_password(old_password, result[2]) and confirm_password == new_password:
+                new_password = encode_password(new_password)
                 if self.base.update([new_password, '1']).rowcount > 0:
                     pwdUpdate()
                     self.master.destroy()

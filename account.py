@@ -11,7 +11,7 @@ def check_aes():
     # 生成密钥
     if not os.path.exists("resource"):
         os.mkdir("resource")
-    if not (os.path.exists("resource/public.pem") and os.path.exists("resource/private.pem")):
+    if not os.path.exists("resource/aesKey"):
         if haveKey() == "yes":
             keyFrame = KeyFrame(True)
         else:

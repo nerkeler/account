@@ -1,17 +1,10 @@
-# -*- coding: utf-8 -*-
-import base64
-import logging
 from tkinter import *
 import tkinter as tk
-from utils.framUtil import PUBLIC
+
 from dao.accountMapper import Db
-from utils.MyRSA import MyRSA
-from utils.logUtil import setup_logging
 from utils.message import saveSuccess
 from tkinter.ttk import *
-
-setup_logging()
-logger = logging.getLogger('server')  # 维护一个全局日志对象
+from utils.myAES import aes_encode, encode_password
 
 
 class AddGui:
@@ -45,10 +38,9 @@ class AddGui:
         self.entry4 = Entry(self.frame4, textvariable=v4)
         self.entry5 = Entry(self.frame5, textvariable=v5)
         self.entry5.bind("<Return>", self.add_account)
-        self.myRSA = MyRSA()
 
     def tk_init(self):
-        logger.info("开始创建新增账户布局")
+        print("开始创建新增账户布局")
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
         w = 269
@@ -82,13 +74,10 @@ class AddGui:
     def add_account(self, event):
         driver = Db()
         password = self.entry3.get()
-        result = base64.b64encode(self.myRSA.encrypt(password, PUBLIC))
-        print(self.myRSA.encrypt(password, PUBLIC))
-        print(result)
-        print("------------")
+        result = encode_password(password)
         data = [self.entry1.get(), self.entry2.get(), result, self.entry4.get(), self.entry5.get()]
         row = driver.insert_account(data)
-        logger.info(f"row.rowcount: {row.rowcount}")
+        print(f"row.rowcount: {row.rowcount}")
         if row.rowcount == 1:
             saveSuccess()
             self.exit()
