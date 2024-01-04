@@ -1,6 +1,6 @@
 # 密码管理器
 
-***图文使用介绍：https://nerkeler.xyz/2023/03/20/windows%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/**<br>
+***图文使用介绍：[https://nerkeler.xyz/2023/03/20/windows%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/](https://nerkeler-hexo.netlify.app/2023/03/20/windows%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/)**<br>
 该密码管理器是一个离线本地使用的工具，采用`AES`对称加密，保证了用户数据的安全性。它支持导入导出，也可方便地管理Chrome/Edge浏览器的密码本。
 
 ## 重要提示
