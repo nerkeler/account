@@ -24,6 +24,7 @@ def check_aes():
 # -p .\service\keyFrame.py -p .\service\login.py -p .\service\mainFrame.py -p .\service\newAccount.py
 # -p .\service\passwordFrame.py -p .\service\updatePassword.py  -p .\service\updateAccount.py -p .\config\tkConfig.py
 # -p .\utils\framUtil.py -p .\utils\message.py -p .\utils\myAES.py  -p .\utils\MyRSA.py -p .\utils\reatest.py
+# python -m nuitka --follow-imports --include-plugin-directory=plugin_dir account.py
 """
         改用非对称加密
 

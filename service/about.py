@@ -68,4 +68,4 @@ class FunctionIntroPag:
         webbrowser.open_new("https://github.com/nerkeler/account")
 
     def open_website1(self, event):
-        webbrowser.open_new("https://nerkeler.xyz/")
+        webbrowser.open_new("https://nerkeler.netlify.app/")
