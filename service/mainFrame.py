@@ -1,7 +1,7 @@
 import csv
 import logging
 import sys
-import ctypes
+
 from sqlite3 import ProgrammingError
 from tkinter import *
 from tkinter import filedialog
@@ -9,13 +9,14 @@ import tkinter as tk
 from tkinter.ttk import *
 from tkinter import font
 from dao.accountMapper import Db
+from service.InputProgressBar import InputProgressBar
 from service.about import FunctionIntroPag
 from service.exportFileFrame import ExportFileFrame
 from service.newAccount import AddGui
 from service.passwordFrame import PasswordFrame
 from service.updateAccount import UpdateGui
 
-from utils.framUtil import *
+from utils.framUtil import insert_all, delete_all, insert
 from utils.logUtil import setup_logging
 from utils.message import noAccount, deleteSuccess, makeSure, deleteFailed, importFailed, importSuccess
 from utils.myAES import decode_password
@@ -46,19 +47,19 @@ class Gui:
         self.importMenu = Menu(self.menubar, tearoff=False)
         self.menubar.add_command(label="首页", command=self.reload)
         self.menubar.add_cascade(label="导入", menu=self.importMenu)
-        self.importMenu.add_command(label="本地导入", command=self.importFile, accelerator="Ctrl+A")
+        self.importMenu.add_command(label="本地导入", command=self.import_file, accelerator="Ctrl+A")
         self.importMenu.add_separator()
-        self.importMenu.add_command(label="chrome导入", command=self.chromeImportFile, accelerator='Ctrl+S')
-        self.importMenu.add_command(label="edge导入", command=self.edgeImportFile, accelerator="Ctrl+D")
+        self.importMenu.add_command(label="chrome导入", command=self.chrome_import_file, accelerator='Ctrl+S')
+        self.importMenu.add_command(label="edge导入", command=self.edge_import_file, accelerator="Ctrl+D")
         self.menubar.add_command(label="导出", command=self.export)
         self.menubar.add_command(label="关于", command=self.bout)
-        self.master.bind("<Control-A>", lambda event: self.importFile())
-        self.master.bind("<Control-S>", lambda event: self.chromeImportFile())
-        self.master.bind("<Control-D>", lambda event: self.edgeImportFile())
+        self.master.bind("<Control-A>", lambda event: self.import_file())
+        self.master.bind("<Control-S>", lambda event: self.chrome_import_file())
+        self.master.bind("<Control-D>", lambda event: self.edge_import_file())
         self.master.config(menu=self.menubar)
         self.frame = Frame(self.master, relief="flat")
         self.treeFrame = Frame(self.master, borderwidth=0, relief="solid")
-        self.tree = Treeview(self.treeFrame, height=50,  columns=("网站", "账号", "密码", "网址"))
+        self.tree = Treeview(self.treeFrame, height=50, columns=("网站", "账号", "密码", "网址"))
         self.VScroll1 = Scrollbar(self.treeFrame, command=self.tree.yview)
         self.tree.config(yscrollcommand=self.VScroll1.set)
         self.VScroll1.config(orient="vertical")
@@ -200,7 +201,7 @@ class Gui:
         self.master.deiconify()
 
     def column(self):
-        self.tree.column("#0", width=50, anchor=CENTER)
+        self.tree.column("#0", width=52, anchor=CENTER)
         self.tree.column("#1", width=188, anchor=CENTER)
         self.tree.column("#2", width=188, anchor=CENTER)
         self.tree.column("#3", width=188, anchor=CENTER)
@@ -224,61 +225,37 @@ class Gui:
         passwordFrame.master.mainloop()
 
     def export(self):
-        exportFile = ExportFileFrame(self.master)
-        exportFile.master.mainloop()
+        export_file = ExportFileFrame(self.master)
+        export_file.master.mainloop()
 
-    def importFile(self):
+    def import_file(self):
         root = tk.Tk()
         root.withdraw()
         root.title("数据导入")
         root.iconbitmap("./image/account.ico")
-        FolderPath = filedialog.askopenfilename(initialdir="/", title="数据导入",
-                                                filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
-        if FolderPath is None or FolderPath == '':
+        folder_path = filedialog.askopenfilename(initialdir="Users/Public/Desktop", title="数据导入",
+                                                 filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
+        if folder_path is None or folder_path == '':
             return
-        try:
-            with open(FolderPath, "r", encoding="utf-8") as csvfile:
-                reader = csv.reader(csvfile)
-                next(reader)  # 跳过第一行
-                for i in reader:
-                    password = i[3]
-                    i[3] = encode_password(password)
-                    row = self.db.import_account(i)
-
-                importSuccess()
-        except ProgrammingError as e:
-            importFailed(e)
-
-        self.reload()
+        bar = InputProgressBar(self.master, folder_path, self)
+        bar.master.mainloop()
 
     def bout(self):
 
         function_intro_page = FunctionIntroPag(self.master)
         function_intro_page.master.mainloop()
 
-    def chromeImportFile(self):
-        self.importFile()
+    def chrome_import_file(self):
+        self.import_file()
 
-    def edgeImportFile(self):
+    def edge_import_file(self):
         root = tk.Tk()
         root.withdraw()
         root.title("Edge数据导入")
         root.iconbitmap("./image/account.ico")
-        FolderPath = filedialog.askopenfilename(initialdir="/", title="Edge数据导入",
-                                                filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
-        if FolderPath is None or FolderPath == '':
+        folder_path = filedialog.askopenfilename(initialdir="/", title="Edge数据导入",
+                                                 filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
+        if folder_path is None or folder_path == '':
             return
-        try:
-            with open(FolderPath, "r", encoding="utf-8") as csvfile:
-                reader = csv.reader(csvfile)
-                next(reader)  # 跳过第一行
-                for i in reader:
-                    password = i[3]
-                    i[3] = encode_password(password)
-                    row = self.db.edge_import(i).fetchone()
-
-                importSuccess()
-        except ProgrammingError as e:
-            importFailed(e)
-
-        self.reload()
+        bar = InputProgressBar(self.master, folder_path, self)
+        bar.master.mainloop()
