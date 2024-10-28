@@ -4,7 +4,7 @@ from tkinter.ttk import *
 from tkinter import filedialog
 from dao.accountMapper import Db
 from dao.baseMapper import BaseDb
-from utils.framUtil import encode_user
+from utils.bcrypt_util import check_password
 from utils.message import exportSuccess, keyOrPasswordError
 from utils.myAES import encode_key, encode_password, decode_password
 
@@ -50,11 +50,10 @@ class ExportFileFrame:
         password = self.entry2.get()
         with open("resource/aesKey", encoding='utf-8') as f:
             localKey = f.read().strip()
-        password = encode_user(password)
         baseDb = BaseDb()
         db = Db()
         result = baseDb.queryOne("1").fetchone()
-        if localKey == key and password == result[2]:
+        if localKey == key and check_password(password, result[2]):
             self.master.quit()
             self.master.destroy()
             root = tk.Tk()

@@ -2,8 +2,6 @@ import csv
 import tkinter as tk
 from sqlite3 import ProgrammingError
 from tkinter import ttk
-import threading
-
 from dao.accountMapper import Db
 from utils.myAES import encode_password
 from utils.message import importFailed, importSuccess
