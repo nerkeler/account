@@ -40,11 +40,10 @@ class AddGui:
         self.entry5.bind("<Return>", self.add_account)
 
     def tk_init(self):
-        print("开始创建新增账户布局")
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
-        w = 269
-        h = 266
+        w = screen_width / 6
+        h = screen_height / 4.5
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))
@@ -75,9 +74,9 @@ class AddGui:
         driver = Db()
         password = self.entry3.get()
         result = encode_password(password)
-        data = [self.entry1.get(), self.entry2.get(), result, self.entry4.get(), self.entry5.get()]
+        last_index = driver.get_last_index()
+        data = [last_index, self.entry1.get(), self.entry2.get(), result, self.entry4.get(), self.entry5.get()]
         row = driver.insert_account(data)
-        print(f"row.rowcount: {row.rowcount}")
         if row.rowcount == 1:
             saveSuccess()
             self.exit()

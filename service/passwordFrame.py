@@ -27,8 +27,8 @@ class PasswordFrame:
         self.master.grab_set()
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
-        w = 560
-        h = 200
+        w = screen_width / 4
+        h = screen_height / 8
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))

@@ -2,14 +2,13 @@ import hashlib
 import tkinter.constants as constants
 
 from dao.baseMapper import BaseDb
-from utils.myAES import encode_password
+from utils.myAES import encode_password, decode_password
 from utils.bcrypt_util import encode_password
 
 
 # 插入一行数据
 def insert(tree, account):
     account = list(account)
-    account[3] = "************"
     tree.insert("", index=constants.END, text=account[0], values=account[1:])
 
 

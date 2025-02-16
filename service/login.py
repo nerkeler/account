@@ -1,4 +1,4 @@
-import logging
+import logging, pyautogui
 import tkinter as tk
 from tkinter import LEFT, RIGHT, END
 from tkinter.ttk import *
@@ -26,8 +26,8 @@ class LoginForm:
         self.master.iconbitmap("./image/account.ico")
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
-        w = 300
-        h = 180
+        w = screen_width / 5
+        h = screen_height / 5
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))
@@ -39,7 +39,7 @@ class LoginForm:
     def create_widgets(self):
 
         # Label(self.master, text="本地密码保存小工具").pack(pady=5)
-        Label(self.master, ).pack(pady=2)
+        Label(self.master, ).pack(pady=25)
         nameLabel = Frame(self.master)
         self.username_label = Label(nameLabel, text="用户名称:", )
         self.username_label.pack(side=LEFT)
@@ -68,6 +68,7 @@ class LoginForm:
         self.password_entry.bind("<Return>", self.login)
         buttonLabel.pack(pady=5, padx=20)
         self.password_entry.focus_set()
+        self.switch_to_english()  # 切换英文输入法
 
     def login(self, event):
         username = self.username_entry.get()
@@ -97,3 +98,10 @@ class LoginForm:
         updatePass.master.mainloop()
         self.master.state("normal")
         self.password_entry.focus_set()
+
+    def switch_to_english(self):
+        try:
+            pyautogui.hotkey("ctrl", "space")
+
+        except Exception as e:
+            logger.info(f"输入法切换失败：{e}")

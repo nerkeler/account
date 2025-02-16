@@ -20,8 +20,8 @@ class ExportFileFrame:
         self.master.iconbitmap("./image/account.ico")
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
-        w = 400
-        h = 200
+        w = screen_width / 4
+        h = screen_height / 6
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))

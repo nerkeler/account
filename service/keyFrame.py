@@ -19,8 +19,8 @@ class KeyFrame:
         self.master.iconbitmap("./image/account.ico")
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
-        w = 400
-        h = 160
+        w = screen_width / 3.5
+        h = screen_height / 8
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))

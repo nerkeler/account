@@ -17,8 +17,8 @@ class InputProgressBar:
         self.master.iconbitmap("./image/account.ico")
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
-        w = 400
-        h = 200
+        w = screen_width / 3.5
+        h = screen_height / 8
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))
@@ -56,7 +56,7 @@ class InputProgressBar:
 
         total_steps = self.step_num
         now_step = 0
-
+        order_index = self.db.get_last_index()
         try:
             with open(self.path, "r", encoding="utf-8") as csvfile:
                 reader = csv.reader(csvfile)
@@ -74,7 +74,9 @@ class InputProgressBar:
                     # 写入数据库
                     password = i[3]
                     i[3] = encode_password(password)
+                    i.append(order_index)
                     self.db.import_account(i)
+                    order_index += 1
 
                 importSuccess()
 

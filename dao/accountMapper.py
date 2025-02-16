@@ -1,3 +1,4 @@
+import logging
 import os
 import sqlite3
 
@@ -23,6 +24,7 @@ class Db:
 
         sql_text = '''CREATE TABLE account
                    (id INTEGER primary key AUTOINCREMENT,
+                    order_index INTEGER UNIQUE,
                     web_name TEXT,
                     account TEXT,
                     password TEXT,
@@ -32,69 +34,72 @@ class Db:
                     update_time DATETIME not null,
                     state INTEGER DEFAULT 1
                    );'''
-        print("创建account表格成功")
         self.cur.execute(sql_text)
+        logging.info("execute : " + sql_text)
 
     def insert_account(self, data):
-        row = self.cur.execute(
-            "INSERT INTO account(web_name, account, password,url, note, create_time, update_time) VALUES(?,?,?,?,?,datetime('now'),datetime('now'))",
-            data)
+        sql_text = "INSERT INTO account(order_index, web_name, account, password,url, note, create_time, update_time) VALUES(?,?,?,?,?,?,datetime('now'),datetime('now'))"
+        row = self.cur.execute(sql_text, data)
         self.connect.commit()
-        print(f"插入一条数据：{data}")
+        logging.info("execute : " + sql_text)
+        # logging.info("data: ", data)
         return row
 
     def import_account(self, data):
-        row = self.cur.execute(
-            "INSERT INTO account(web_name,url, account, password, note, create_time, update_time) VALUES(?,?,?,?,?,datetime('now'),datetime('now'))",
-            data)
+        sql_text = "INSERT INTO account(web_name,url, account, password, note, order_index, create_time, update_time) VALUES(?,?,?,?,?,?,datetime('now'),datetime('now'))"
+        row = self.cur.execute(sql_text, data)
         self.connect.commit()
-        # print(f"插入一条数据：{data}")
-        return row
-
-    def edge_import(self, data):
-        row = self.cur.execute(
-            "INSERT INTO account(web_name,url, account, password, create_time, update_time) VALUES(?,?,?,?,datetime('now'),datetime('now'))",
-            data)
-        self.connect.commit()
-        # print(f"插入一条数据：{data}")
+        logging.info("execute : " + sql_text)
+        # logging.info("data: ", data)
         return row
 
     def update(self, account):
-        row = self.cur.execute("UPDATE account set web_name=?,account=?, password=?,url=?,note=? where id=?",
-                               (account[1], account[2], account[3], account[4], account[5], account[0]))
+        sql_text = "UPDATE account set web_name=?,account=?, password=?,url=?,note=? where id=?"
+        row = self.cur.execute(sql_text, (account[1], account[2], account[3], account[4], account[5], account[0]))
         self.commit()
+        logging.info("execute : " + sql_text)
         return row
 
     def query_url(self, url):
-        return self.cur.execute(
-            "SELECT id,web_name,account,password,url,note FROM account where state='1'  AND url like'%" + url + "%'")
+
+        sql_text = "SELECT order_index,web_name,account,url,note FROM account where state='1'  AND url like'%" + url + "%'  order by order_index"
+        logging.info("execute : " + sql_text)
+        return self.cur.execute(sql_text)
 
     def query_all(self):
-        query_all = "SELECT id,web_name,account,password,url,note FROM account where state='1'"
+        query_all = "SELECT order_index,web_name,account,url,note FROM account where state='1' order by order_index"
         accounts = self.cur.execute(query_all).fetchall()
-        print("执行查询所有数据")
+        logging.info("execute : " + query_all)
         return accounts
 
     def export(self):
-        query_all = "SELECT web_name,url,account,password,note FROM account where state='1'"
+        query_all = "SELECT  web_name,url,account,password,note FROM account where state='1'"
         accounts = self.cur.execute(query_all).fetchall()
-        print("执行查询所有数据")
+        logging.info("execute : " + query_all)
         return accounts
 
     def query_one(self, number):
-        return self.cur.execute("SELECT id,web_name,account,password,url,note FROM account where state='1'AND id = ?",
-                                (number,))
+        sql_text = "SELECT order_index,web_name,account,url,note FROM account where state='1'AND order_index = ? order by order_index"
+        logging.info("execute : " + sql_text)
+        return self.cur.execute(sql_text, (number,))
+
+    def query_detail(self, number):
+        sql_text = "SELECT order_index,web_name,account,password,url,note FROM account where state='1'AND order_index = ?"
+        logging.info("execute : " + sql_text)
+        return self.cur.execute(sql_text, (number,))
 
     def query_text(self, text):
-        return self.cur.execute(
-            "SELECT id,web_name,account,password,url,note FROM account where state='1'  AND web_name like'%" + text + "%'")
+        sql_text = "SELECT order_index,web_name,account,url,note FROM account where state='1'  AND web_name like'%" + text + "%'  order by order_index"
+        logging.info("execute : " + sql_text)
+        return self.cur.execute(sql_text)
 
     def commit(self):
         self.connect.commit()
 
     def query_last(self):
-        return self.cur.execute("SELECT id,web_name,account,password,url,note FROM account  ORDER BY id DESC limit 1",
-                                ).fetchone()
+        sql_text = "SELECT id,order_index,web_name,account,password,url,note FROM account where state='1'  ORDER BY id DESC limit 1"
+        logging.info("execute : " + sql_text)
+        return self.cur.execute(sql_text).fetchone()
 
     def init(self):
         if self.flag:
@@ -112,6 +117,53 @@ class Db:
             self.flag = True
 
     def delete_one(self, state):
-        row = self.cur.execute("UPDATE account set state = '0' where id=?", (state,))
+        sql_text = "UPDATE account set state = '0' where order_index=?"
+        row = self.cur.execute(sql_text, (state,))
         self.commit()
+        logging.info("execute : " + sql_text)
         return row
+
+    def up(self, state):
+        pre = state - 1
+        if state == 1:
+            return
+        sql_text = "UPDATE account set order_index=0 where order_index=?"
+        row1 = self.cur.execute(sql_text, (pre,))
+        logging.info("execute : " + sql_text)
+        sql_text2 = "UPDATE account set order_index=? where order_index=?"
+        row2 = self.cur.execute(sql_text2, (pre, state,))
+        logging.info("execute : " + sql_text2)
+        sql_text3 = "UPDATE account set order_index = ? where order_index=0"
+        row3 = self.cur.execute(sql_text3, (state,))
+        logging.info("execute : " + sql_text3)
+        self.commit()
+
+    def down(self, state):
+
+        last = self.get_last_index() - 1
+        pre = state + 1
+        if state == last:
+            return
+
+        sql_text = "UPDATE account set order_index=0 where order_index=?"
+        row1 = self.cur.execute(sql_text, (pre,))
+        logging.info("execute : " + sql_text)
+        sql_text2 = "UPDATE account set order_index=? where order_index=?"
+        row2 = self.cur.execute(sql_text2, (pre, state,))
+        logging.info("execute : " + sql_text2)
+        sql_text3 = "UPDATE account set order_index = ? where order_index=0"
+        row3 = self.cur.execute(sql_text3, (state,))
+        logging.info("execute : " + sql_text3)
+        self.commit()
+
+    def get_last_index(self):
+
+        sql_text = "SELECT  order_index  FROM   account where state='1' ORDER  BY  order_index   DESC  LIMIT   1;"
+
+        last_index = 1
+        last_index_list = self.cur.execute(sql_text).fetchall()
+        if len(last_index_list) == 1:
+            last_index = last_index_list[0][0]
+            last_index += 1
+        logging.info("execute : " + sql_text)
+        return last_index

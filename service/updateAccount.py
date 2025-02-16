@@ -42,12 +42,11 @@ class UpdateGui:
         self.entry5 = Entry(self.frame5, textvariable=v5)
 
     def tk_init(self, account):
-        print("开始创建账户布局")
         self.account = account
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
-        w = 269
-        h = 280
+        w = screen_width / 6
+        h = screen_height / 4.5
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))
@@ -85,9 +84,7 @@ class UpdateGui:
         result = encode_password(password)
         data = [self.account[0], self.entry1.get(), self.entry2.get(), result, self.entry4.get(), self.entry5.get()]
         row = driver.update(data)
-        print(f"row.rowcount: {row.rowcount}")
         if row.rowcount == 1:
-            print("更新数据成功，正在退出查看框")
             updateSuccess()
             self.exit()
 

@@ -15,8 +15,8 @@ class FunctionIntroPag:
         self.master.iconbitmap("./image/account.ico")
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
-        w = 880
-        h = 460
+        w = screen_width / 2.2
+        h = screen_height / 3
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))

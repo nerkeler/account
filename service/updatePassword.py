@@ -19,8 +19,8 @@ class UpdatePwd:
         self.master.iconbitmap("./image/account.ico")
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
-        w = 280
-        h = 230
+        w = screen_width / 5
+        h = screen_height / 5
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))
@@ -30,7 +30,7 @@ class UpdatePwd:
 
     def create_widgets(self):
         # Label(self.master, text="本地密码保存小工具").pack(pady=5)
-        Label(self.master, ).pack(pady=2)
+        Label(self.master, ).pack(pady=15)
         self.base = BaseDb()
 
         nameLabel = Frame(self.master)

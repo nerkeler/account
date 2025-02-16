@@ -30,7 +30,6 @@ def check_aes():
 
 """
 if __name__ == '__main__':
-
     # 是否第一次登录，生成密钥
     check_aes()
 
