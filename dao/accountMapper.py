@@ -117,7 +117,7 @@ class Db:
             self.flag = True
 
     def delete_one(self, state):
-        sql_text = "UPDATE account set state = '0' where order_index=?"
+        sql_text = "UPDATE account set state = '0', order_index = (0-order_index) where order_index=?"
         row = self.cur.execute(sql_text, (state,))
         self.commit()
         logging.info("execute : " + sql_text)

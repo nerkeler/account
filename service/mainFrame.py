@@ -41,11 +41,10 @@ class Gui:
 
         # menubar
         self.menubar = tk.Menu(self.master)
+        self.menubar.add_cascade(label="首页", command=self.reload)
 
         self.home = tk.Menu(self.menubar, tearoff=False)
-        self.menubar.add_cascade(label="Account", menu=self.home)
-        self.home.add_command(label="回到首行", command=self.reload)
-        self.home.add_separator()
+        self.menubar.add_cascade(label="导入导出", menu=self.home)
 
         self.home.add_command(label="本地导入", command=self.import_file, accelerator="Alt+A")
 
@@ -57,7 +56,6 @@ class Gui:
         self.home.add_separator()
 
         self.home.add_command(label="本地导出", command=self.export)
-
         self.menubar.add_cascade(label="密码生成器", command=self.generate_password)
 
         self.aboutMenu = tk.Menu(self.menubar, tearoff=False)

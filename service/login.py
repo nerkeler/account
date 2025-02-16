@@ -6,7 +6,6 @@ from tkinter.ttk import *
 from dao.baseMapper import BaseDb
 from service.updatePassword import UpdatePwd
 from utils.bcrypt_util import check_password
-from utils.framUtil import encode_user
 from utils.logUtil import setup_logging
 from utils.message import loginError
 import sys
