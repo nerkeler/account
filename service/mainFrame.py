@@ -223,7 +223,7 @@ class Gui:
         self.h = screen_height / 2
         x = (screen_width - self.w) / 2
         y = (screen_height - self.h) / 2
-        self.master.geometry("%dx%d+%d+%d" % (self.w, self.h, x, y))
+        self.master.geometry("%dx%d+%d+%d" % (self.w - 80, self.h, x, y))
         self.master.deiconify()
 
     def column(self):
