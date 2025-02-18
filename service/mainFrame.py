@@ -1,5 +1,6 @@
 import logging
 import sys
+import ctypes
 
 import tkinter as tk
 from tkinter import filedialog, font
@@ -21,6 +22,34 @@ from utils.myAES import decode_password
 
 setup_logging()
 logger = logging.getLogger('server')  # 维护一个全局日志对象
+
+display_dict = {
+    "720": {
+        "width": 820,
+        "height": 500
+    }, "1080": {
+        "width": 1020,
+        "height": 700
+    }, "1440": {
+        "width": 1200,
+        "height": 800
+    }, "800": {
+        "width": 840,
+        "height": 520
+    }, "1200": {
+        "width": 1000,
+        "height": 650
+    }, "1600": {
+        "width": 1235,
+        "height": 800
+    }
+}
+
+part_col_dict = {
+    "2560": 64,
+    "1920": 53,
+    "1280": 43
+}
 
 
 class Gui:
@@ -217,17 +246,25 @@ class Gui:
         self.VScroll1.pack(side="right", fill="y")
 
     def show(self):
+
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
         self.w = screen_width / 2
         self.h = screen_height / 2
+        if str(screen_height) in display_dict.keys():
+            self.w = display_dict[str(screen_height)]['width']
+            self.h = display_dict[str(screen_height)]['height']
         x = (screen_width - self.w) / 2
         y = (screen_height - self.h) / 2
-        self.master.geometry("%dx%d+%d+%d" % (self.w - 80, self.h, x, y))
+
+        self.master.geometry("%dx%d+%d+%d" % (self.w, self.h, x, y))
         self.master.deiconify()
 
     def column(self):
         part_col = int(self.w / 20)
+        if str(self.master.winfo_screenwidth()) in part_col_dict.keys():
+            part_col = part_col_dict[str(self.master.winfo_screenwidth())]
+        print(part_col)
         self.tree.column("#0", width=part_col * 1, anchor="w")
         self.tree.column("#1", width=part_col * 5, anchor="w")
         self.tree.column("#2", width=part_col * 5, anchor="w")

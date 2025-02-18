@@ -12,6 +12,28 @@ constant_symbol = [chr(i) for i in range(35, 39)]
 constant_symbol.append("!")
 
 
+display_dict = {
+    "720": {
+        "width": 450,
+        "height": 200
+    }, "1080": {
+        "width": 600,
+        "height": 230
+    }, "1440": {
+        "width": 620,
+        "height": 230
+    }, "800": {
+        "width": 450,
+        "height": 200
+    }, "1200": {
+        "width": 600,
+        "height": 230
+    }, "1600": {
+        "width": 620,
+        "height": 230
+    }
+}
+
 class PasswordFrame:
 
     def __init__(self, root):
@@ -29,6 +51,9 @@ class PasswordFrame:
         screen_height = self.master.winfo_screenheight()
         w = screen_width / 4
         h = screen_height / 8
+        if str(screen_height) in display_dict.keys():
+            w = display_dict[str(screen_height)]['width']
+            h = display_dict[str(screen_height)]['height']
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))

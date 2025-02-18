@@ -25,11 +25,23 @@ class LoginForm:
         self.master.iconbitmap("./image/account.ico")
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
-        w = screen_width / 5
-        h = screen_height / 5
+        # 不同分辨率/屏幕比例适配
+        self.regulators = 1
+        self.resolution_ratio = 1
+        if float(screen_width / screen_height) == float(16 / 10):
+            self.regulators = 1.1
+            self.resolution_ratio = screen_height / 800
+        elif float(screen_width / screen_height) == float(16 / 9):
+            self.regulators = 1
+            self.resolution_ratio = screen_height / 720
+        w = screen_width / 5 / self.resolution_ratio
+        h = screen_height / 3.6 / self.resolution_ratio
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
-        self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))
+
+        self.master.geometry(
+            "%dx%d+%d+%d" % (w / self.regulators * (1 + (self.resolution_ratio - 1) / 2), h / self.regulators * (1 + (self.resolution_ratio - 1) / 4), x, y))
+
         self.master.deiconify()
         self.base = BaseDb()
         self.master.protocol("WM_DELETE_WINDOW", self.login_break)
@@ -38,7 +50,7 @@ class LoginForm:
     def create_widgets(self):
 
         # Label(self.master, text="本地密码保存小工具").pack(pady=5)
-        Label(self.master, ).pack(pady=25)
+        Label(self.master, ).pack(pady=8 / self.regulators)
         nameLabel = Frame(self.master)
         self.username_label = Label(nameLabel, text="用户名称:", )
         self.username_label.pack(side=LEFT)

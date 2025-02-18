@@ -6,6 +6,28 @@ from tkinter import END
 
 from utils.message import emptyKey, haveKey
 
+display_dict = {
+    "720": {
+        "width": 460,
+        "height": 180
+    }, "1080": {
+        "width": 500,
+        "height": 180
+    }, "1440": {
+        "width": 600,
+        "height": 200
+    }, "800": {
+        "width": 460,
+        "height": 180
+    }, "1200": {
+        "width": 500,
+        "height": 180
+    }, "1600": {
+        "width": 600,
+        "height": 200
+    }
+}
+
 
 class KeyFrame:
 
@@ -15,12 +37,15 @@ class KeyFrame:
         self.master.withdraw()  # 隐藏闪烁
         self.master.update()
         self.master.title("本地密钥")
-        self.master.resizable(False, False)
+        # self.master.resizable(False, False)
         self.master.iconbitmap("./image/account.ico")
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
         w = screen_width / 3.5
-        h = screen_height / 8
+        h = screen_height / 5
+        if str(screen_height) in display_dict.keys():
+            w = display_dict[str(screen_height)]['width']
+            h = display_dict[str(screen_height)]['height']
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))
@@ -48,7 +73,8 @@ class KeyFrame:
         self.entry.insert(0, key)
         # self.entry.config(state="disabled")
         self.frame = Frame(self.master)
-        self.copyButton = Button(self.frame, text=buttonTitle, command=lambda: self.copyToBoard() if not flag else self.pasteToBoard())
+        self.copyButton = Button(self.frame, text=buttonTitle,
+                                 command=lambda: self.copyToBoard() if not flag else self.pasteToBoard())
         self.exit = Button(self.frame, text="确认", command=self.confirm)
         self.frame.pack(padx=10, pady=5)
         self.copyButton.pack(side=tk.LEFT, padx=25)

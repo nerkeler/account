@@ -5,9 +5,29 @@ from tkinter.ttk import *
 from tkinter import LEFT, RIGHT, END
 from dao.baseMapper import BaseDb
 from utils.bcrypt_util import encode_password, check_password
-from utils.framUtil import encode_user
-from utils.message import updateSuccess, pwdNotEqual, pwdError, pwdTooShot, pwdUpdate
+from utils.message import pwdNotEqual, pwdError, pwdTooShot, pwdUpdate
 
+display_dict = {
+    "720": {
+        "width": 280,
+        "height": 260
+    }, "1080": {
+        "width": 360,
+        "height": 280
+    }, "1440": {
+        "width": 400,
+        "height": 300
+    }, "800": {
+        "width": 280,
+        "height": 260
+    }, "1200": {
+        "width": 360,
+        "height": 280
+    }, "1600": {
+        "width": 400,
+        "height": 300
+    }
+}
 
 class UpdatePwd:
     def __init__(self, ):
@@ -21,6 +41,9 @@ class UpdatePwd:
         screen_height = self.master.winfo_screenheight()
         w = screen_width / 5
         h = screen_height / 5
+        if str(screen_height) in display_dict.keys():
+            w = display_dict[str(screen_height)]['width']
+            h = display_dict[str(screen_height)]['height']
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))

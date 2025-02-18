@@ -8,6 +8,28 @@ from utils.bcrypt_util import check_password
 from utils.message import exportSuccess, keyOrPasswordError
 from utils.myAES import encode_key, encode_password, decode_password
 
+display_dict = {
+    "720": {
+        "width": 360,
+        "height": 200
+    }, "1080": {
+        "width": 540,
+        "height": 240
+    }, "1440": {
+        "width": 600,
+        "height": 260
+    }, "800": {
+        "width": 360,
+        "height": 200
+    }, "1200": {
+        "width": 540,
+        "height": 240
+    }, "1600": {
+        "width": 600,
+        "height": 260
+    }
+}
+
 
 class ExportFileFrame:
 
@@ -16,12 +38,15 @@ class ExportFileFrame:
         self.master.withdraw()  # 隐藏闪烁
         self.master.update()
         self.master.title("数据导出")
-        self.master.resizable(False, False)
+        # self.master.resizable(False, False)
         self.master.iconbitmap("./image/account.ico")
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
         w = screen_width / 4
         h = screen_height / 6
+        if str(screen_height) in display_dict.keys():
+            w = display_dict[str(screen_height)]['width']
+            h = display_dict[str(screen_height)]['height']
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))

@@ -8,6 +8,30 @@ from tkinter.ttk import *
 from utils.myAES import encode_password
 
 
+display_dict = {
+    "720": {
+        "width": 340,
+        "height": 300
+    }, "1080": {
+        "width": 360,
+        "height": 320
+    }, "1440": {
+        "width": 400,
+        "height": 360
+    }, "800": {
+        "width": 340,
+        "height": 320
+    }, "1200": {
+        "width": 360,
+        "height": 320
+    }, "1600": {
+        "width": 400,
+        "height": 380
+    }
+}
+
+
+
 class UpdateGui:
 
     def __init__(self, root):
@@ -47,6 +71,9 @@ class UpdateGui:
         screen_height = self.master.winfo_screenheight()
         w = screen_width / 6
         h = screen_height / 4.5
+        if str(screen_height) in display_dict.keys():
+            w = display_dict[str(screen_height)]['width']
+            h = display_dict[str(screen_height)]['height']
         x = (screen_width - w) / 2
         y = (screen_height - h) / 2
         self.master.geometry("%dx%d+%d+%d" % (w, h, x, y))
