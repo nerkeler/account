@@ -3,7 +3,7 @@ import sys
 import ctypes
 
 import tkinter as tk
-from tkinter import filedialog, font
+from tkinter import filedialog, font, messagebox
 from tkinter.ttk import *
 
 from dao.accountMapper import Db
@@ -19,6 +19,7 @@ from utils.framUtil import insert_all, delete_all, insert
 from utils.logUtil import setup_logging
 from utils.message import noAccount, deleteSuccess, makeSure, deleteFailed
 from utils.myAES import decode_password
+import webbrowser
 
 setup_logging()
 logger = logging.getLogger('server')  # 维护一个全局日志对象
@@ -123,6 +124,7 @@ class Gui:
         self.VScroll1.config(orient="vertical")
 
         self.tree.bind("<Button-1>", self.showId)
+        self.tree.bind("<Button-2>", self.middleClick)
         self.tree.bind("<Double-Button-1>", self.doubleClick)
         # self.tree.bind("<Button-3>", self.rightButton)
 
@@ -186,6 +188,30 @@ class Gui:
                 update.tk_init(item)
         self.reload()
 
+    def middleClick(self, event):
+        if event is not None:
+            e = event.widget
+            iid = e.identify("item", event.x, event.y)
+            state = e.item(iid, "text")
+            if state is not None and state != '':
+                item = list(self.db.query_detail(state).fetchone())
+                print(item[4])
+                url = item[4]
+                result = messagebox.askyesno(
+                    "确认打开",
+                    f"您确定要打开以下网址吗？\n\n{url}",
+                    icon=messagebox.QUESTION
+                )
+                if result:
+                    if str(url).startswith("http"):
+                        try:
+                            # 打开网址
+                            webbrowser.open_new(url)
+                        except Exception as e:
+                            messagebox.showerror("错误", f"无法打开网址:\n{url}")
+                    else:
+                        messagebox.showwarning("警告", f"当前网址不符合http/https规范 :\{url}")
+
     def delete_item(self):
 
         if makeSure():
@@ -209,10 +235,10 @@ class Gui:
             pass
 
     def rightButton(self, event):
-        menu = self.method_name()
+        menu = self.method_name(event)
         menu.post(event.x_root, event.y_root)
 
-    def method_name(self):
+    def method_name(self, event):
         menu = tk.Menu(self.master, tearoff=False)
         menu.add_command(label="添加", command=self.add_account)
         # menu.add_command(label="删除", command=self.delete_one)
